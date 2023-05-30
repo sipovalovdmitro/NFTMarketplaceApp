@@ -1,0 +1,56 @@
+<% if activity.event == 'create' || activity.event == 'list' ||
+        (activity.event == 'update' &&
+                (Collection.is_valid_activity(activity) || activity.changeset["owner_id"].present?)  &&
+                (!activity.changeset["state"].present? ||
+                        (activity.changeset["state"].present? && activity.changeset["state"] != ["pending", "approved"]))) %>
+
+    <div class="asset__action asset__action--verified">
+      <% if ['create', 'list'].include?(activity.event) && activity.item.present? %>
+
+          <%= link_to user_path(activity.item.creator.address), class:"user_img" do %>
+            <%= image_tag url_for(Collection.get_activity_user(activity)) %>
+          <% end %>
+        <p class="content_details">
+          <% if @collection.is_lazy_minted? %>
+            Created
+          <% else %>
+            <%= (activity.event == 'list') ? 'Listed' : 'Minted' %>
+          <% end %>
+          <%= time_ago_in_words(activity.created_at) %> ago <br>by
+          @<%= link_to activity.item.creator.full_name, user_path(activity.item.creator.address) %> </p>
+      <% else %>
+          <% owner_name = activity.next ? activity.next.reify.owner.full_name : activity.reify.owner.full_name %>
+          <% if activity.event == "update"  && activity.reify.owner.present? %>
+              <% if activity.changeset.keys.include?("owner_id") || activity.changeset.keys.include?("owned_tokens") %>
+                 <% activity_dup = activity.dup %>
+                  <%= link_to user_path(activity.reify.owner.address), class:"user_img" do %>
+                    <%= image_tag url_for(Collection.get_activity_user(activity)) %>
+                  <% end %>
+                  <p class="content_details">
+                    <% if activity.changeset.keys.include?("owned_tokens") %>
+                      <% qty = (activity.changeset["owned_tokens"][0] - activity.changeset["owned_tokens"][1]) < 0 ? (activity.changeset["owned_tokens"][0] - activity.changeset["owned_tokens"][1]) * -1 : (activity.changeset["owned_tokens"][0] - activity.changeset["owned_tokens"][1]) %>
+                      @<%= link_to activity.reify.owner.full_name, user_path(activity_dup.item.owner.address)%> transferred <%= qty %> <%= qty.to_i > 1 ? 'copies' : 'copy' %> <br/><%= time_ago_in_words(activity.created_at) %> ago
+                    <% else %>
+                      Transferred <%= time_ago_in_words(activity.created_at) %> ago from <%= activity.reify.owner.full_name %> <br>to @<%= link_to activity_dup.item.owner.full_name, user_path(activity_dup.item.owner.address)%>
+                    <% end %>
+                  </p>
+              <% elsif activity.changeset.keys.include?("instant_sale_price") %>
+                  <%= link_to user_path(activity.item.owner.address), class:"user_img" do %>
+                    <%= image_tag url_for(Collection.get_activity_user(activity)) %>
+                  <% end %>
+                  <p class="content_details">Price updated at <%= time_ago_in_words(activity.created_at) %> ago to <%= activity.changeset["instant_sale_price"].last %> <br>by @<%= link_to owner_name, user_path(activity.item.owner.address)%> </p>
+              <% elsif activity.changeset.keys.include?("put_on_sale") %>
+                  <%= link_to user_path(activity.item.owner.address), class:"user_img" do %>
+                    <%= image_tag url_for(Collection.get_activity_user(activity)) %>
+                  <% end %>
+                  <p class="content_details"><%= if activity.changeset["put_on_sale"].last then 'Put on sale' else 'Removed from sale' end %> on <%= time_ago_in_words(activity.created_at) %> ago <br>by @<%= link_to owner_name, user_path(activity.item.owner.address)%> </p>
+              <% elsif activity.changeset["state"].present? && (activity.changeset["state"] == ["approved", "burned"] || activity.changeset["state"] == [2, 3]) %>
+                  <%= link_to user_path(activity.reify.owner.address), class:"user_img" do %>
+                      <%= image_tag url_for(Collection.get_activity_user(activity)), class: 'img-responsive' %>
+                  <% end %>
+                  <p class="content_details">Burned at <%= time_ago_in_words(activity.created_at) %> ago <br>by @<%= link_to owner_name, user_path(activity.reify.owner.address)%> </p>
+                  <% end %>
+              <% end %>
+          <% end %>
+          </div>
+      <% end %>

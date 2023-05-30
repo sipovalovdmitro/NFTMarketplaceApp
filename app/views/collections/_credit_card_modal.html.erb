@@ -1,0 +1,79 @@
+<div class="zoom-anim-dialog mfp-hide modal sm_modal card-effect" id="credit-card-modal">
+  <button class="modal__close md_cls" type="button"><i class="fas fa-times"></i></button>
+
+  <div id='buy-with-card'>
+    <%= form_tag "javascript:void(0)", method: :post, remote: true, id: 'creaditCardBuyForm' do %>
+      <h4 class="modal-title share_link_page_h4"><%= t('collections.show.checkout') %></h4>
+      <div class="modal-body pt-10 pb-10">
+        <% erc20_token = @collection.erc20_token %>
+        <span id="buyContractAddress" class="hide"><%= erc20_token.address %></span>
+        <span id="buyContractDecimals" class="hide"><%= erc20_token.decimals %></span>
+        <p class="buynow-content">
+          <span class="innertitle"><%= t('collections.show.you_are_abt_purchase') %></span>
+          <span class="frm-title" id="credit_card_collection_name"><b><%= @collection.name %></b></span>
+            <span class="frm-from" data-toggle="tooltip" data-placement="top" title="<%= @collection.owner.address %>">from <%= link_to @collection.owner.full_name, user_path(@collection.owner.address), target: '_blank' %></span></span>
+        </p>
+        <%= hidden_field_tag 'referred_collection', @collection.address %>
+        <%= hidden_field_tag 'referral_link_params  ', params[:token] %>
+        <%= hidden_field_tag 'referral_fee', @collection.referral_percentage %>
+        <div class="placebidbuy_valbox card-effect">
+          <% price, symbol = @collection.sale_price %>
+          <div class="form-group-pop bidBuyInputs">
+            <% if @collection.multiple? %>
+              <div>
+                <label for="recipient-name" class="col-form-label"><%= t('collections.show.quantity_available', token: @collection.owned_tokens.to_i) %></label>
+                <input id='credit_card_buy_qty' name="buy[quantity]" maxQuantity="<%= @collection.owned_tokens.to_i %>" class="validInteger sign__input" placeholder="Enter quantity" required/>
+              </div>
+            <% else %>
+              <input id='credit_card_buy_qty' name="buy[quantity]" value="<%= @collection.owned_tokens.to_i %>" maxQuantity="<%= @collection.owned_tokens.to_i %>" class="validInteger sign__input" hidden/>
+            <% end %>
+
+            <div>
+              <label for="recipient-name" class="col-form-label price-label"><%= t('collections.show.buy_price') %>:</label>
+              <span class="price_currency nftpay-price <% if @collection.single?%> single_collection_price_currency <%end%>">
+                <span id="credit_card_buy_price" price="<%= price %>"><%= number_with_delimiter(price) %></span><span id="buy_currency">&nbsp;<%= symbol %></span>
+                  </span>
+
+                  
+            </div>
+          </div>
+            <div class="flex_box_inputs">
+              <span class="price-amt-content"><%= t('collections.show.your_balance') %></span>
+              <span class="price-amt-val" id="current_balance"><%= current_balance %> <%= Rails.application.credentials.config[:base_coin] %></span>
+            </div>
+            <div class="flex_box_inputs">
+              <span class="price-amt-content"><%= t('collections.show.your_buy_balance') %></span>
+              <span class="price-amt-val"><span class="ercCurBalance">0</span> <%= symbol %></span>
+            </div>
+            <div class="flex_box_inputs">
+              <span class="price-amt-content"><%= t('collections.show.service_fee') %></span>
+              <span class="price-amt-val"><span id="credit-card-buy-amt-dp">0</span> <%= symbol %></span>
+            </div>
+            <div class="flex_box_inputs">
+              <span class="price-amt-content"><%= t('collections.show.you_will_pay') %></span>
+              <span class="price-amt-val"><span id="credit-card-buy-total-amt-dp">0</span> <%= symbol %></span>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="text-align:center">
+        <a class="btn-effect btn bidding-element-btn triggerCreditCardPay theme-btn  sign__btn" href="" role="button"><%= t('collections.show.pay') %></a>
+      </div>
+    <% end %>
+  </div>
+  <div class="zoom-anim-dialog mfp-hide modal sm_modal" style='height: 650px; background: white;' id="placeCreditCardPay">
+    
+    <button class="modal__close md_cls" type="button"><i class="fas fa-times"></i></button>
+    <!-- <h4 class="modal-title"><%= t('shared.follow_steps') %></h4> -->
+
+    <div class="modal-body last_bdr_remove" style='padding-top: 20px; height: 100%;' id="showWertWidget">
+      <% erc20_token = @collection.erc20_token %>
+      <% price, symbol = @collection.sale_price %>
+      <iframe
+        height="550" 
+        class='nftpay-iframe'
+        style="border:none; width:100%; padding: 16px" 
+        src="">
+      </iframe>
+    </div>
+  </div>
+</div>

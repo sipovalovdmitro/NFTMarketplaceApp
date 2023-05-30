@@ -1,0 +1,35 @@
+<div id="burnModal" class="zoom-anim-dialog mfp-hide modal sm_modal card-effect">
+  <button class="modal__close md_cls" type="button"><i class="fas fa-times"></i></button>
+  <h4 class="modal-title share_link_page_h4"><%= t('collections.show.burn_token')%></h4>
+  <div class="modal-body pt-10 pb-10">
+    <p class="buynow-content">
+      <span class="innertitle"><%= t('collections.show.burn_token_alert')%></span>
+    </p>
+    <%= form_tag('#', class: 'change-price-form', id: 'tokenBurnForm') do %>
+      <% if @collection.multiple? %>
+        <div class="col-md-12 pt-10 pb-10">
+          <div class="">
+            <label for="quantity"><%= t('collections.show.quantity') %>*</label>
+            <input type="number" id='burn_qty' class="form-control sign__input burnQuantity validatePresence validInteger" placeholder="Enter Quantity" max="<%= @collection.owned_tokens %>" required/>
+          </div>
+        </div>
+      <% else %>
+        <input type="number" id='burn_qty' class="burnQuantity" value="<%= @collection.owned_tokens %>" hidden/>
+      <% end %>
+    <% end %>
+  </div>
+  <div class="modal-footer" style="text-align:right">
+    <a class="btn buy-now bidding-element-btn triggerBurn theme-btn btn-effect" href="" role="button"><%= t('collections.show.burn_token')%></a>
+    <a class="bidding-element-btn secondary-btn close__modal btn-effect sale-type place-bid" data-dismiss="modal" role="button"><%= t('shared.cancel')%></a>
+  </div>
+</div>
+
+<div id="burnToken" class="zoom-anim-dialog mfp-hide modal sm_modal">
+  <button class="modal__close md_cls" type="button"><i class="fas fa-times"></i></button>
+  <h4 class="modal-title share_link_page_h4"><%= t('shared.follow_steps')%></h4>
+  <div class="modal-body">
+    <div class="convertEth">
+      <%= render partial: 'burning' %>
+    </div>
+  </div>
+</div>

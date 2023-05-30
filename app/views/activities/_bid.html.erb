@@ -1,0 +1,70 @@
+<% if activity.item.user.present? && activity.item.collection.present? && (activity.event == 'create' ||
+        (activity.event == 'update' && activity.changeset.keys.include?("state") && ["executed", "expired"].include?(activity.changeset["state"].last))) %>
+
+  <div class="activity-item animatable fadeInLeft">
+    <div href="" class="card-effect activity-main-content">
+
+      <%# if activity.event == "create" && activity.item.user.present? && activity.item.collection.present? %>
+
+      <% bid = activity.item %>
+      <% cover_image = bid.collection.cover.present? ? bid.collection.cover : bid.collection.attachment %>
+      <% if activity.event == 'create' %>
+        <%# <div class="activity"> %>
+          <p><%= time_ago_in_words(activity.created_at) %></p>
+          <div class="activity-content">
+
+            <div class="act-item act-img">
+              <%= link_to collection_path(bid.collection.address) do %>
+                <%= image_tag url_for(cover_image) %>
+              <% end %>
+            </div>
+
+            <div class="act-item">
+              <%= link_to collection_path(bid.collection.address) do %>
+                <%= bid.collection.title %>
+              <% end %>
+
+              <p>offered by
+              <%= link_to user_path(bid.user.address) do %>
+                @<%= bid.user.full_name %>
+              <% end %>  <br>for <%= bid.crypto_currency %> <%= bid.crypto_currency_type %> </p>
+            </div>
+          </div>
+        <%# </div> %>
+      <% else %>
+        <%# <div class="activity"> %>
+          <p><%= time_ago_in_words(activity.created_at) %></p>
+          <div class="activity-content">
+
+            <div class="act-item act-img">
+              <%= link_to collection_path(bid.collection.address) do %>
+                <%= image_tag url_for(cover_image) %>
+              <% end %>
+            </div>
+
+            <div class="act-item">
+              <%= link_to collection_path(bid.collection.address) do %>
+                <%= bid.collection.title %>
+              <% end %>
+
+              <% if activity.changeset["state"].last == "executed" %>
+                <p>Accepted by
+                  <%= link_to user_path(bid.owner.address) do %>
+                    @<%= bid.owner.full_name %>
+                  <% end %>  <br>for <%= bid.crypto_currency %> <%= bid.crypto_currency_type %>
+                </p>
+              <% end %>
+              <% if activity.changeset["state"].last == "expired" %>
+                <p>Expired by
+                  <%= link_to user_path(bid.owner.address) do %>
+                    @<%= bid.owner.full_name %>
+                  <% end %><br>for <%= bid.crypto_currency %> <%= bid.crypto_currency_type %>
+                </p>
+              <% end %>
+            </div>
+          </div>
+        <%# </div> %>
+      <% end %> 
+    </div>
+  </div>
+<% end %>

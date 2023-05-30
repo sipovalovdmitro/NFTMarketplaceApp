@@ -1,0 +1,21 @@
+<% img_url = collection[:image_url].present? ? collection[:image_url] : 'banner-1.png' %>
+<% type = collection[:type] == "ERC721" ? 'single' : 'multiple' %>
+    <div class="explore-col animatable fadeInLeft">
+      <div class="sko-auction hvr-float">
+        <div class="t_c">
+          <a href="<%= new_collection_path(type: type, nft: collection[:metadata], token: collection[:token], contract_address: collection[:contract_address], balance: collection[:balance], properties: collection[:metadata]['attributes']) %>" class="aution-body-img">
+            <span class="collection-card-img" style="background-image: url('<%= img_url %>')">
+              <%= image_tag img_url %>
+            </span>
+          </a>
+        </div>
+
+        <div class="aution-body-content">
+          <div class="aution-title">
+            <h2 class="auc-title-item" data-toggle="tooltip" data-placement="top" title="<%= collection[:title] %>">
+              <a href="<%= new_collection_path(type: type, nft: collection[:metadata], token: collection[:token], contract_address: collection[:contract_address], balance: collection[:balance], properties: collection[:metadata]['attributes']) %>"><%= collection[:title] %><a>
+            </h2>
+          </div>
+        </div>
+      </div>
+    </div>

@@ -1,0 +1,57 @@
+<div class="user-wrapper">
+  <div class="user-container">
+
+    <div class="activity-head">
+      <div class="activity-head-item animatable fadeInLeft">
+        <h1>Activity</h1>
+      </div>
+
+      <div class="activity-head-item">
+        <a class="filteration animatable fadeInRight" href="javascript:void(0);">
+          <span> <%= image_tag 'filter.svg' %></span>
+          <h5>Filter</h5>
+          <span><i class="fas fa-chevron-down"></i></span>
+        </a>
+      </div>
+      <div class="activity-filter card-effect filter" aria-labelledby="dropdownMenuProfile">
+        <h4 class="filter__title">Filters <a href="<%=activities_path(activity_type: 'activity')%>" style="font-size: 12px;">Clear all</a></h4>
+
+        <div class="filter__group">
+          <ul class="filter__checkboxes">
+            <% options = { tab: "activity" } %>
+            <li>
+              <input id="type5" type="checkbox" name="type5" <%= (is_filter_active(params[:filters], 'minted') == 'active') ? "checked='true'" : '' %> onclick="window.location.href ='<%= build_filter_path("activity", params[:filters], "minted", options) %>'">
+              <label for="type5">Minted</label>
+            </li>
+            <li>
+              <input id="type9" type="checkbox" name="type9"  <%= (is_filter_active(params[:filters], 'bid') == 'active') ? "checked='true'" : '' %> onclick="window.location.href ='<%= build_filter_path("activity", params[:filters], "bid", options) %>'">
+              <label for="type9">Bids</label>
+            </li>
+            <li>
+              <input id="type10" type="checkbox" name="type10"  <%= (is_filter_active(params[:filters], 'like') == 'active') ? "checked='true'" : '' %> onclick="window.location.href ='<%= build_filter_path("activity", params[:filters], "like", options) %>'">
+              <label for="type10">Likes</label>
+            </li>
+            <li>
+              <input id="type11" type="checkbox" name="type11"  <%= (is_filter_active(params[:filters], 'following') == 'active') ? "checked='true'" : '' %> onclick="window.location.href ='<%= build_filter_path("activity", params[:filters], "following", options) %>'">
+              <label for="type11">Followings</label>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <% if @activities.present? %>
+      <div class="activity-container fadeInUp animated">
+        <% @activities.each do |activity| %>
+          <% next if activity.item.blank? %>
+          <%if ["Follow", "Like", "Collection", "Bid"].include?(activity.item_type)%>
+            <%= render "activities/#{activity.item_type.downcase}", activity: activity %>
+          <%end%>
+        <% end %>
+      </div>
+    <% else %>
+      <%= render partial: 'common/empty' %>
+    <% end %>
+
+  </div>
+</div>

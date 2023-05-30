@@ -1,0 +1,25 @@
+<div class="main-content">
+  <div class="page-content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <% if @token.errors.any? %>
+            <% @token.errors.full_messages.each do |message|%>
+              <h3 class="error"><%= message %> </h3>
+            <%end%>
+          <%end%>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <%= form_tag(admin_own_tokens_path, method: :post, multipart: true) do %>
+            <%= render 'form', fee: @token, title: "New Token" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

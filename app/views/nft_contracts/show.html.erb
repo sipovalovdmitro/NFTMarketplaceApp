@@ -1,0 +1,257 @@
+<%# Modal Confirmation %>
+<div class="modal-place modal-confirm">
+  <div class="modal-overlay modal-toggle modal-close"></div>
+  <div class="modal-wrapper modal-transition card-effect">
+
+    <div class="modal-body modal-step">
+      <div class="item-det-con card-effect">
+        <% if @contract.attachment.present? %>
+          <%= image_tag @contract.attachment %>
+        <% end %>
+        <h3><%= @contract.name %></h3>
+      </div>
+
+      <div class="status-tbl">
+        <div class="status-item">
+          <%# Referral System link%>
+          <% if current_user.present? %>
+            <% if @contract.referrals.un_used.present? && is_active_user_link(@contract.id , current_user.id) %>
+              <b>
+                Referral Fee: <%= @contract&.referral_percentage %>%
+              </b>
+              <p>
+                <%= @referral_link %>
+              </p>
+              <div class="sko-social">
+                <a href="https://twitter.com/share?url=<%= @referral_link %>&text=Check out <%=  @contract.name %> on SokuNFT!" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=<%= @referral_link %>&caption=Check out <%=  @contract.name %> on SokuNFT!" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fab fa-facebook"></i></a>
+                <a href="https://telegram.me/share/url?url=<%= @referral_link %>&text=Check out <%=  @contract.name %> on SokuNFT!" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fas fa-paper-plane"></i></a>
+                <a href="mailto:?subject=<%=  @contract.name %>&body=<%= @contract.description %> Link here:<%= @referral_link %>"><i class="fas fa-envelope"></i></a>
+                <p class="is-hidden" id="copyUrl"><%= @referral_link %></p>
+                <div class="copy-text modal-copy-text">
+                  <button class="modal-copied"><span class="hvr-float" onclick="copyToClipboard('#copyUrl')"><i class="fas fa-link"></i></span></button>
+                </div>
+              </div>
+            <% else %>
+              <p>
+                <a href="<%= generate_referral_for_contract_path(nft_contract_id: @contract.id)  %>"> Generate referral link </a>
+              </p>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="user-wrapper">
+  <div class="user-container">
+
+    <div class="user-bg-img">
+      <% if @contract.cover.present? %>
+        <%= image_tag @contract.cover, class: "animate__animated animate__zoomIn" %>
+      <% end %>
+    </div>
+
+    <div class="user-img animate__animated animate__zoomIn">
+      <% if @contract.attachment.present? %>
+        <%= image_tag @contract.attachment, class: "user-detail-img" %>
+      <% end %>
+      <% if @contract&.owner&.is_verified? %>
+        <%= image_tag 'approved-icon.svg', class: "sko-coll-approved" %>
+      <% end %>
+    </div>
+
+    <div class="user-detail">
+      <div class="details-section">
+        <div class="details-item">
+          <h2 class="animatable fadeInLeft"><%= @contract.name %> <small>@<%=@contract.name %></small></h2>
+
+          <div class="details-tags-btn animatable fadeInLeft">
+
+            <div class="details-tags-item">
+              <div class="tabs-col-usr">
+                <%= image_tag 'nft-diamond.svg' %>
+              </div>
+              <p class="is-hidden" id="copyText1"><%= @contract.address %></p>
+              <p class="tabs-col-usr"><%= @contract.address.first(6)+"..."+@contract.address.last(4) %></p>
+              <div class="copy-text">
+                <button class="btn-copied" onclick="copyToClipboard('#copyText1')"><span class="tabs-col-usr "><i class="far fa-copy"></i></span></button>
+              </div>
+            </div>
+          </div>
+          <div class="details-tags-btn user-globe animatable fadeInLeft">
+            <div class="bidding-item">
+              <div class="sko-social social-share-btn">
+                <% title = "Check out this NFT, #{@contract.name}" %>
+                <a href="https://twitter.com/share?url=<%= current_url %>&text=<%= title %>, <%= @contract.description %>" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=<%= current_url %>&caption=<%= title %>&description=<%= @contract.description %>" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fab fa-facebook"></i></a>
+                <a href="https://telegram.me/share/url?url=<%= current_url %>&text=<%= title %>, <%= @contract.description %>" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fas fa-paper-plane"></i></a>
+                <a href="mailto:?subject=<%= title %>&body=<%= @contract.description %> Link here:<%= current_url %>"><i class="fas fa-envelope"></i></a>
+                <p class="is-hidden" id="copySocial"><%= current_url %></p>
+                <div class="copy-text modal-copy-text">
+                  <button class="modal-copied"><span class="hvr-float" onclick="copyToClipboard('#copySocial')"><i class="fas fa-link"></i></span></button>
+                </div>
+              </div>
+            </div>
+            <% if @contract&.referral_percentage&.present? && !@referral_link %>
+              <div class="bidding-item">
+                <div class="title-item">
+                  <span class="btn-effect refer-button">
+                    Refer
+                  </span>
+                </div>
+              </div>
+            <%elsif @contract&.referral_percentage&.present? && @referral_link %>
+              <div class="bidding-item">
+                <div class="title-item">
+                  <span class="btn-effect refer-button">
+                    View Referral
+                  </span>
+                </div>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="user-wrap-para animatable fadeInUp">
+            <p><%= @contract.description%></p>
+          </div>
+        </div>
+
+        <div class="details-item">
+
+          <table class="prices-table anifaderight animation-element animatable fadeInRight">
+            <tr>
+              <td>
+                <p>Contract Deployer</p>
+                <% if @contract.contract_deployer.present? %>
+                  <h4><%= @contract.contract_deployer.first(6)+"..."+@contract.contract_deployer.last(4) %></h4>
+
+                <% elsif @contract.owner.present? %>
+                  <h4><%= @contract.owner.full_name %></h4>
+
+                <%else%>
+                  <% contract_deployer =  get_contract_deployer(@contract)%>
+                  <h4><%= contract_deployer.first(6)+"..."+contract_deployer.last(4) %></h4>
+                <% end %>
+              </td>
+              <td>
+                <p>Owners</p>
+                <h4><%= number_with_delimiter(total_collection_holders(@contract)) %></h4>
+              </td>
+              <td>
+                <!-- <p>Created</p>
+                <h4><%= @contract.created_at.strftime('%b %d, %Y') %></h4> -->
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p>Total Sales</p>
+                <h4><%= number_with_delimiter(total_collection_transactions(@contract)) %></h4>
+              </td>
+              <td>
+                <p>Volume</p>
+                <% volume = number_with_precision(usd_to_eth(@contract.calculate_volume(@contract.address)), percision: 3) %>
+                  <%if volume && volume.to_f > 0 %>
+                    <h4><%= number_with_delimiter(volume) %> ETH</h4>
+                  <%else%>
+                    <h4>-</h4>
+                  <%end%>
+              </td>
+              <td>
+                <p>Avg. Price</p>
+                    <% avg_price = number_with_precision(total_collection_avgPrice(@contract), percision: 3) %>
+                    <%if avg_price && avg_price.to_f > 0 %>
+                      <h4>$<%= number_with_delimiter(avg_price) %></h4>
+                    <% else %>
+                      <h4>-</h4>
+                    <%end%>
+              </td>
+            </tr>
+          </table>
+
+        </div>
+
+      </div>
+
+      <%# tabs Sections %>
+
+      <div class="category-sections">
+
+        <div class="cat-sec-item">
+          <ul class="skop-explore animatable fadeInLeft">
+            <li>
+              <%= link_to "On Sale", nft_contract_path(nft_contract_id: @contract.id ,sale_type: 'sale'), class: "active hvr-bounce-in", method: :get %>
+            </li>
+            <li>
+              <%= link_to "Allow Bids", nft_contract_path(nft_contract_id: @contract.id ,sale_type: 'bid'), class: "hvr-bounce-in", method: :get %>
+            </li>
+            <li>
+              <%= link_to "Timed Auctions", nft_contract_path(nft_contract_id: @contract.id ,sale_type: 'auction'), class: "hvr-bounce-in", method: :get %>
+            </li>
+            <li>
+              <%= link_to "Reset", nft_contract_path(nft_contract_id: @contract.id), class: "hvr-bounce-in", method: :get %>
+            </li>
+          </ul>
+        </div>
+        <div class="cat-sec-item">
+          <div class="header__action sorting-drop header__action--profile">
+            <a class="explore-tabs hvr-bounce-in" href="javascript:void(0);" role="button" id="dropdownMenuFilterSort" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <%= sort_sonversions(params[:sort_type]) || 'Price/Recently Added' %>
+              <span><i class="fas fa-angle-down"></i></span>
+            </a>
+            <ul class="dropdown-menu card-effect header__profile-menu" aria-labelledby="dropdownMenuProfile">
+              <li>
+                <%= link_to 'Price: Low to High', nft_contract_path(nft_contract_id: @contract.id, sort_type: 'ascending'), class: "hvr-bounce-in", method: :get %>
+              </li>
+              <li>
+                <%= link_to "Price: High to Low", nft_contract_path(nft_contract_id: @contract.id, sort_type: 'descending'), class: "hvr-bounce-in", method: :get %>
+              </li>
+              <li>
+                <%= link_to "Date: Newest", nft_contract_path(nft_contract_id: @contract.id, sort_type: 'newest'), class: "hvr-bounce-in", method: :get %>
+              </li>
+              <li>
+                <%= link_to "Date: Oldest", nft_contract_path(nft_contract_id: @contract.id, sort_type: 'oldest'), class: "hvr-bounce-in", method: :get %>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="sko-tabs-items tab-explore tab-explore-pro ">
+        <% if params[:sale_type].present? || params[:sort_type].present? || @filter_tokens.present? %>
+          <% if @filter_tokens.present? %>
+            <%@filter_tokens.each do |collection|%>
+              <%= render "nft_contracts/collection_card", collection: collection %>
+            <%end%>
+          <% else %>
+            <%= render partial: 'common/empty' %>
+          <%end%>
+        <% else %>
+          <%= render partial: 'common/empty' %>
+        <% end %>
+      </div>
+         <div class="flickr_pagination sko-pagination">
+        <%= will_paginate @filter_tokens %>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script type="text/javascript">
+  $(".readmore-btn").click(function(){
+      $(".short_content").css("display","none");
+      $('.full_content').css("display","block");
+      $(this).css("display","none");
+      $('.readless-btn').css("display","block");
+  });
+  $(".readless-btn").click(function(){
+      $(".full_content").css("display","none");
+      $('.short_content').css("display","block");
+      $(this).css("display","none");
+      $('.readmore-btn').css("display","block");
+  });
+</script>

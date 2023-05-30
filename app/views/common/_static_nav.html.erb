@@ -1,0 +1,125 @@
+<%if false%>
+<ul class="nav navbar-nav">
+  <li class="active"><a href="<%= search_path%>">Explore</a></li>
+  <li><a href="/faq">How it works</a></li>
+  <li class="dropdown">
+    <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);">Community <span class="caret"></span></a>
+    <ul class="dropdown-menu card-effect community-ddm">
+      <!-- <li><a href="javascript:void(0);">NFT Token</a></li> -->
+      <li><a href="<%= Rails.application.credentials.config[:discussion_url] %>" target="_blank">Discussion</a></li>
+<!--      <li><a href="javascript:void(0);">Voting</a></li>-->
+      <li><a href="javascript:void(0);">Suggest feature</a></li>
+      <li><a href="javascript:void(0);">Subscribe</a></li>
+      <li class="divider"></li>
+      <li class="communit-ddm-social-media">
+        <a href="javascript:void(0);">
+          <i class="fa fa-telegram"></i>
+        </a>
+        <a href="javascript:void(0);">
+          <i class="fa fa-instagram"></i>
+        </a>
+        <a href="javascript:void(0);">
+          <i class="fa fa-youtube"></i>
+        </a>
+      </li>
+    </ul>
+  </li>
+  <button type="button" class="navbar-toggle navbar-break-btn" data-toggle="collapse" data-target="#myNavbarCustom">
+    <button class="hamburger">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    </button>
+    <button class="cross">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    </button>
+  </button>
+</ul>
+<div class="header__menu">
+  <ul class="header__nav">
+    <li class="header__nav-item">
+      <a class="header__nav-link" href=""></a>
+    </li>
+    <li class="header__nav-item">
+      <a class="header__nav-link" href=""></a>
+    </li>
+    <li class="header__nav-item">
+
+    </li>
+    <li class="header__nav-item">
+      <a href="<%= activities_path %>" class="header__nav-link">Activity</a>
+    </li>
+    <li class="header__nav-item">
+      <a class="header__nav-link" href="/all-collections">Collections</a>
+    </li>
+    <!--<li class="header__nav-item">
+      <a href="#" class="header__nav-link">Community</a>
+    </li>-->
+  </ul>
+</div>
+<%end%>
+<div class="header__action header__action--profile">
+  <a class="" href="javascript:void(0);" role="button" id="dropdownMenuProfile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <button class="header__btn new-menu-icon  " type="button"><%= image_tag 'new-menu.svg', alt: '' %></button>
+  </a>
+  <ul class="dropdown-menu card-effect header__profile-menu" aria-labelledby="dropdownMenuProfile">
+    <%#if current_user.is_approved%>
+    <li>
+      <a target="_blank" href="https://swap.app.sokuswap.finance/swap?outputCurrency=0x4c3a8eceb656ec63eae80a4ebd565e4887db6160">
+        <i class="fa-solid fa-wallet"></i>         
+        Buy Crypto
+      </a>
+    </li>
+    <li>
+      <a class="" href="/search">
+      <i class="fa-solid fa-magnifying-glass"></i>
+         Explore
+      </a>
+    </li>
+    <li>
+          <a href="<%=new_collection_path%>" class="">
+          <i class="fa-solid fa-pencil"></i>
+          Create
+          </a>
+      </li>
+    <li>
+          <a href="/rankings" class="">
+          <i class="fa-solid fa-ranking-star"></i>
+          Rankings
+          </a>
+    </li>
+    <li>
+          <a href="/referrals" class="">
+          <i class="fa-solid fa-share"></i>
+          Referrals
+          </a>
+    </li>
+    <li>
+      <a href="/all-collections"  class="">
+      <i class="fa-sharp fa-solid fa-chess-board"></i>
+        Collections
+        </a>
+       </li>
+    <%#end%>
+    <%#if current_user.is_approved%>
+    <!-- <li class="">
+      <a href="<%= activities_path %>" class="">
+      <i class="fa-solid fa-clock-rotate-left"></i>
+      Activity
+      </a>
+    </li> -->
+    <%#end%>
+
+    <li><a href="/faq">
+        <i class="fa-solid fa-circle-question"></i>
+        How It Works</a>
+    </li>
+    <li><a href="/about">
+    <i class="fa-brands fa-readme"></i>
+        About Us
+        </a>
+    </li>
+
+  </ul>
+</div>

@@ -1,0 +1,85 @@
+<% collection_attachment = collection.get_attachment(current_user)%>
+<div class="swiper-slide">
+  <div class="explore-col animatable fadeInLeft">
+    <div class="sko-auction hvr-float">
+
+      <a href="<%= collection_path(collection.address)%>" class="aution-body-img">
+        <span class="collection-card-img" style="background-image: url('<%= cover_url(collection) %>')">
+          <%= image_tag cover_url(collection)%>
+        </span>
+      </a>
+
+      <div class="aution-body-content">
+        <%# title %>
+        <div class="aution-title">
+
+          <h2 class="auc-title-item">
+            <a href="<%= collection_path(collection.address)%>"> <%= collection.title %></a>
+          </h2>
+          <% symbol = nil %>
+          <% if collection.instant_sale_price %>
+            <% symbol = collection.erc20_token&.symbol %>
+          <% else %>
+            <% symbol = highest_bid(collection)&.erc20_token&.symbol %>
+          <% end %>
+          <% if symbol == 'SOKU' %>
+            <%= image_tag 'soku.png' %>
+          <% elsif symbol == 'WBNB' %>
+            <%= image_tag 'wbnb.svg' %>
+          <% else %>
+            <%= image_tag 'nft-diamond.svg' %>
+          <% end %>
+        </div>
+
+        <%# auction related collection %>
+        <div class="related-col">
+          <ul>
+            <li>
+              <% if collection&.owner.present? %>
+                <div class="sko-tooltip">
+                  <p>Current Owner: <a href="<%=user_path(collection.owner.address)%>">@<%= collection.owner.full_name %></a></p>
+                </div>
+                <%= image_tag collection.owner.profile_image %>
+                <% if collection.owner.is_verified? %>
+                  <%= image_tag 'approved-icon.svg', class: 'explore-approved' %>
+                <% end %>
+              <% end %>
+            </li>
+
+            <li>
+              <% if collection&.creator.present? %>
+                <div class="sko-tooltip">
+                  <p>Creator: <a href="<%=user_path(collection.creator.address)%>">@<%= collection.creator.full_name %></a></p>
+                </div>
+                <%= image_tag collection.creator.profile_image %>
+                <% if collection.creator.is_verified? %>
+                  <%= image_tag 'approved-icon.svg', class: 'explore-approved' %>
+                <% end %>
+              <% end %>
+            </li>
+          </ul>
+        </div>
+
+        <%# auction price %>
+        <div class="aution-price-det">
+          <div class="auction-price-item">
+            <% highest_bid = highest_bid(collection) %>
+            <% if highest_bid.present? %>
+              <h5>Highest bid</h5>
+              <%# Need to calculate number here bid here%>
+              <h4>Bid <%= highest_bid.amount.to_f %> <%= highest_bid.erc20_token&.symbol %></h4>
+            <% else %>
+              <h4>No bid present</h4>
+            <% end %>
+          </div>
+
+          <div class="auction-price-item">
+            <a href="<%= collection_path(collection.address)%>" class="hvr-float" >Buy now</a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>

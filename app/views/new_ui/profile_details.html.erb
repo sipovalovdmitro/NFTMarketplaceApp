@@ -1,0 +1,414 @@
+<div class="user-wrapper">
+  <div class="user-container">
+
+    <div class="profile-container">
+
+      <div class="profile-item">
+        <div class="profile-img">
+          <%= image_tag 'profile-img.png', class: "animate__animated animate__zoomIn" %>
+        </div>
+      </div>
+
+      <div class="profile-item">
+
+        <%# flex %>
+        <div class="profile-diamond animatable fadeInRight">
+          <div class="diamond-item">
+            <%= image_tag 'nft-diamond.svg' %>
+            <h3>Ethereum</h3>
+          </div>
+          <div class="diamond-item anifaderight animation-element">
+            <%= image_tag 'nft-heart.svg', class: "heartbeat" %>
+            <h3>135</h3>
+          </div>
+        </div>
+
+        <%# flex %>
+        <div class="profile-title">
+          <div class="title-item animatable fadeInRight">
+            <h2>Duo # 6758</h2>
+          </div>
+          <div class="title-item animatable fadeInRight">
+            <span><i class="fas fa-ellipsis-h"></i></span>
+          </div>
+        </div>
+
+        <%# flex %>
+        <div class="profile-related animatable fadeInUp">
+
+          <div class="related-item card-effect "> <%# flex %>
+            <div class="related-item-img">
+              <%= image_tag 'avatar-img.png', class: "item-coll-img" %>
+              <%= image_tag 'approved-icon.svg', class: "item-approved" %>
+            </div>
+            <div class="related-item-title">
+              <p>Creator <span>2.5% royalities</span></p>
+              <h3>Everai Heroes: Duo</h3>
+            </div>
+          </div>
+          <div class="related-item card-effect "> <%# flex %>
+            <div class="related-item-img">
+              <%= image_tag 'avatar-img.png', class: "item-coll-img" %>
+              <%= image_tag 'approved-icon.svg', class: "item-approved" %>
+            </div>
+            <div class="related-item-title">
+              <p>Creator <span>2.5% royalities</span></p>
+              <h3>Everai Heroes: Duo</h3>
+            </div>
+          </div>
+        </div>
+
+        <%# On sale for  %>
+        <div class="profile-onsale card-effect">
+          <p>On sale for</p>
+          <h3>0.99 ETH</h3>
+          <ul>
+            <li><a class="sale-type hvr-float" href="">Buy now</a></li>
+            <li><a class="onsale-btn hvr-float" href="">Place a bid</a></li>
+          </ul>
+
+          <%# modal %>
+          <div class="modal-place modal-step">
+            <div class="modal-overlay modal-toggle modal-close"></div>
+            <div class="modal-wrapper modal-transition card-effect">
+
+              <div class="modal-head">
+                <h2 class="head-con modal-heading">Follow Steps</h2>
+                <button class="head-con modal-toggle"><i class="modal-close fas fa-times"></i></button>
+              </div>
+
+              <div class="modal-body modal-step">
+                <form action="" method="">
+                  <div class="form-group card-effect">
+                    <div class="form-group-item">
+                      <div class="progress-track">
+                        <input type="checkbox" class="form-control" id="approved">
+                        <label for="approved"></label>
+                      </div>
+                    </div>
+                    <div class="form-group-item">
+                      <h4>Approve asset</h4>
+                      <p>This transaction is conducted only once per assets type</p>
+                    </div>
+                  </div>
+                  <div class="form-group card-effect">
+                    <div class="form-group-item">
+                      <div class="progress-track">
+                        <input type="checkbox" class="form-control" id="purchase">
+                        <label for="purchase"></label>
+                      </div>
+                    </div>
+                    <div class="form-group-item">
+                      <h4>Purchase</h4>
+                      <p>This transaction is conducted only once per assets type</p>
+                    </div>
+                  </div>
+                </form>
+
+              </div>
+              <div class="modal-footer">
+                <button class="modal-close modal-btn modal-toggle">Cancel</button>
+              </div>
+
+            </div>
+          </div>
+
+          <%# Modal Choose type %>
+          <div class="modal-place modal-type">
+            <div class="modal-overlay modal-toggle modal-close"></div>
+            <div class="modal-wrapper modal-transition card-effect">
+
+              <div class="modal-head">
+                <h2 class="head-con modal-heading">Put on Sale</h2>
+                <button class="head-con modal-toggle"><i class="modal-close  fas fa-times"></i></button>
+              </div>
+
+              <div class="modal-body modal-step">
+                <p>Choose sale type</p>
+                <div class="step-item-con">
+                  <div class="step-item">
+                    <a href="">
+                      <%= image_tag 'f-price.svg' %>
+                      <h3>Fixed price</h3>
+                    </a>
+                  </div>
+
+                  <div class="step-item">
+                    <a href="">
+                      <%= image_tag 'bids.svg' %>
+                      <h3>Open for bid</h3>
+                    </a>
+                  </div>
+
+                  <div class="step-item">
+                    <a href="">
+                      <%= image_tag 'clock.svg' %>
+                      <h3>Timed auction</h3>
+                    </a>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+          <%# Modal Confirmation %>
+          <div class="modal-place modal-confirm">
+            <div class="modal-overlay modal-toggle modal-close"></div>
+            <div class="modal-wrapper modal-transition card-effect">
+
+              <div class="modal-body modal-step">
+                <div class="item-det-con card-effect">
+                  <p><i class="far fa-check-circle"></i> You successfully purchased</p>
+                  <%= image_tag 'profile-img.png' %>
+                  <h3>Duo #6721</h3>
+                </div>
+
+                <div class="status-tbl">
+                  <div class="status-item">
+                    <p>Status</p>
+                    <p class="txt-confirmed">Confirmed</p>
+                  </div>
+                  <div class="status-item">
+                    <p>Transaction Hash</p>
+                    <p class="txt-hash">0xj4585j8kdqw8990lkkdasioi38498...</p>
+                  </div>
+                </div>
+
+                <div class="status-label">
+                  <p>Let's show-off a little</p>
+                  <div class="sko-social">
+                    <a href=""><i class="fab fa-twitter"></i></a>
+                    <a href=""><i class="fab fa-facebook"></i></a>
+                    <a href=""><i class="fas fa-paper-plane"></i></a>
+                    <a href=""><i class="fas fa-envelope"></i></a>
+                    <a href=""><i class="fas fa-link"></i></a>
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="modal-footer">
+                <button class="modal-close modal-btn modal-toggle">View NFT</button>
+                <button class="modal-btn modal-toggle">Continue</button>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <%# On sale for  %>
+        <div class="profile-det-tabs card-effect animatable fadeInUp">
+
+          <ul class="sko-hero-tab">
+            <li data-tc="details" class="active"><a href="javascript:void(0)">Details</a></li>
+            <li data-tc="bids" ><a href="javascript:void(0)">Bids</a></li>
+            <li data-tc="history" ><a href="javascript:void(0)">History</a></li>
+          </ul>
+
+          <div class="profile-tabs-det" data-tc="details">
+            <h3 class="p-pro-title">Owner</h3>
+            <div class="profile-owner-det"> <%# flex %>
+              <div class="pro-owner-img">
+                <%= image_tag 'avatar-img.png' %>
+              </div>
+
+              <div class="pro-owner-token">
+                <h3>0xf1bd76e43...73b5(1)</h3>
+              </div>
+            </div>
+
+            <div class="profile-properties">
+              <h3 class="p-pro-title">Properties</h3>
+              <%# flex %>
+              <div class="properties-container">
+
+                <div class="pro-con-item">
+                  <p class="pro-armor">Armor Color</p>
+                  <h3>Pink Passion</h3>
+                  <p class="pro-rarity" >3.4% rarity</p>
+                </div>
+
+                <div class="pro-con-item">
+                  <p class="pro-armor">Back</p>
+                  <h3>Corporal</h3>
+                  <p class="pro-rarity" >3.4% rarity</p>
+                </div>
+
+                <div class="pro-con-item">
+                  <p class="pro-armor">Background</p>
+                  <h3>Pink Passion Dazzling Vision </h3>
+                  <p class="pro-rarity" >3.4% rarity</p>
+                </div>
+
+                <div class="pro-con-item">
+                  <p class="pro-armor">Composition</p>
+                  <h3>Duo's Journery</h3>
+                  <p class="pro-rarity" >3.4% rarity</p>
+                </div>
+
+                <div class="pro-con-item">
+                  <p class="pro-armor">Crown</p>
+                  <h3>Samurai</h3>
+                  <p class="pro-rarity" >3.4% rarity</p>
+                </div>
+
+                <div class="pro-con-item">
+                  <p class="pro-armor">Front</p>
+                  <h3>Ramesses</h3>
+                  <p class="pro-rarity" >3.4% rarity</p>
+                </div>
+
+                <div class="pro-con-item">
+                  <p class="pro-armor">Highlights</p>
+                  <h3>Ethernal Teal</h3>
+                  <p class="pro-rarity" >3.4% rarity</p>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="profile-tabs-det is-hidden" data-tc="bids">
+
+            <div class="profile-owner-det"> <%# flex %>
+              <div class="pro-owner-img">
+                <%= image_tag 'avatar-img.png' %>
+              </div>
+
+              <div class="pro-owner-token">
+                <h3>0xf1bd76e43...73b5(2)</h3>
+              </div>
+            </div>
+
+            <div class="profile-properties">
+              <h3 class="p-pro-title">properties</h3>
+              <%# flex %>
+              <div class="properties-container">
+
+                <div class="pro-con-item">
+                  <p class="pro-armor">Armor Color</p>
+                  <h3>Pink Passion</h3>
+                  <p class="pro-rarity" >3.4% rarity</p>
+                </div>
+
+                <div class="pro-con-item">
+                  <p class="pro-armor">Back</p>
+                  <h3>Corporal</h3>
+                  <p class="pro-rarity" >3.4% rarity</p>
+                </div>
+
+                <div class="pro-con-item">
+                  <p class="pro-armor">Background</p>
+                  <h3>Pink Passion Dazzling Vision </h3>
+                  <p class="pro-rarity" >3.4% rarity</p>
+                </div>
+
+                <div class="pro-con-item">
+                  <p class="pro-armor">Composition</p>
+                  <h3>Duo's Journery</h3>
+                  <p class="pro-rarity" >3.4% rarity</p>
+                </div>
+
+                <div class="pro-con-item">
+                  <p class="pro-armor">Crown</p>
+                  <h3>Samurai</h3>
+                  <p class="pro-rarity" >3.4% rarity</p>
+                </div>
+
+                <div class="pro-con-item">
+                  <p class="pro-armor">Front</p>
+                  <h3>Ramesses</h3>
+                  <p class="pro-rarity" >3.4% rarity</p>
+                </div>
+
+                <div class="pro-con-item">
+                  <p class="pro-armor">Highlights</p>
+                  <h3>Ethernal Teal</h3>
+                  <p class="pro-rarity" >3.4% rarity</p>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="profile-tabs-det is-hidden" data-tc="history">
+
+            <div class="profile-owner-det"> <%# flex %>
+              <div class="pro-owner-img">
+                <%= image_tag 'avatar-img.png' %>
+              </div>
+
+              <div class="pro-owner-token">
+                <h3>0xf1bd76e43...73b5(3)</h3>
+              </div>
+            </div>
+
+            <div class="profile-properties">
+              <h3 class="p-pro-title">properties</h3>
+              <%# flex %>
+              <div class="properties-container">
+
+                <div class="pro-con-item">
+                  <p class="pro-armor">Armor Color</p>
+                  <h3>Pink Passion</h3>
+                  <p class="pro-rarity" >3.4% rarity</p>
+                </div>
+
+                <div class="pro-con-item">
+                  <p class="pro-armor">Back</p>
+                  <h3>Corporal</h3>
+                  <p class="pro-rarity" >3.4% rarity</p>
+                </div>
+
+                <div class="pro-con-item">
+                  <p class="pro-armor">Background</p>
+                  <h3>Pink Passion Dazzling Vision </h3>
+                  <p class="pro-rarity" >3.4% rarity</p>
+                </div>
+
+                <div class="pro-con-item">
+                  <p class="pro-armor">Composition</p>
+                  <h3>Duo's Journery</h3>
+                  <p class="pro-rarity" >3.4% rarity</p>
+                </div>
+
+                <div class="pro-con-item">
+                  <p class="pro-armor">Crown</p>
+                  <h3>Samurai</h3>
+                  <p class="pro-rarity" >3.4% rarity</p>
+                </div>
+
+                <div class="pro-con-item">
+                  <p class="pro-armor">Front</p>
+                  <h3>Ramesses</h3>
+                  <p class="pro-rarity" >3.4% rarity</p>
+                </div>
+
+                <div class="pro-con-item">
+                  <p class="pro-armor">Highlights</p>
+                  <h3>Ethernal Teal</h3>
+                  <p class="pro-rarity" >3.4% rarity</p>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>

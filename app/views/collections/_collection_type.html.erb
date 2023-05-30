@@ -1,0 +1,41 @@
+<div class="user-wrapper">
+  <div class="user-container">
+
+    <div class="cr-col-heading anifadeleft animation-element">
+      <h2 class="animate__animated animate__fadeInLeft">Choose Type</h2>
+      <p class="animate__animated animate__fadeInLeft">Choose “Single” for one of a kind or “Multiple” if you want to sell one collectible multiple times</p>
+    </div>
+
+    <div class="cr-type-col anifadeup animation-element">
+      <div class="cr-type-item animatable fadeInUp ">
+        <div class="hvr-bob">
+          <a href="<%= new_collection_path(type: "single")%>" class="cr-type-con card-effect">
+            <div class="cr-img-con ">
+              <%= image_tag 'single.svg' %>
+            </div>
+            <div class="cr-det-con">
+              <h3>Single</h3>
+              <p>To highlight the uniqueness and individuality of your collectible</p>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div class="cr-type-item animatable fadeInUp ">
+        <div class="hvr-bob">
+          <a href="<%= new_collection_path(type: "multiple") %>" class="cr-type-con card-effect">
+            <div class="cr-img-con">
+              <%= image_tag 'multiple.svg' %>
+            </div>
+            <div class="cr-det-con">
+              <h3>Multiple</h3>
+              <p>If you want to share your NFT with a large number of community members</p>
+            </div>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>

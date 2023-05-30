@@ -1,0 +1,774 @@
+<% render 'common/meta_og', title: @collection.title, description: @collection.description, image: meta_url(@collection) %>
+<% is_collection_owner = @collection.is_owner?(current_user) %>
+<% referral_token = params[:token] %>
+<%= hidden_field_tag 'collection_id', @collection.address %>
+<%= hidden_field_tag 'is_collection_lazy_minted', @collection.is_lazy_minted? %>
+
+<%# Modal Confirmation %>
+<div class="modal-place modal-confirm">
+  <div class="modal-overlay modal-toggle modal-close"></div>
+  <div class="modal-wrapper modal-transition card-effect">
+
+    <div class="modal-body modal-step">
+      <div class="item-det-con card-effect">
+        <%# <p><i class="far fa-check-circle"></i> You successfully purchased</p> %>
+        <%= image_tag cover_url(@collection) %>
+        <h3><%= @collection.name %></h3>
+      </div>
+
+      <div class="status-tbl">
+        <div class="status-item">
+          <%# Referral System link%>
+          <% if current_user.present? %>
+            <b>Referral Fee: <%= @collection&.referral_percentage %>%</b>
+            <% if @collection.referrals.un_used.present? && is_active_user_link_for_nft(@collection.id , current_user.id) %>
+              <p>
+                <%= @referral_link %>
+              </p>
+              <div class="sko-social">
+                <a href="https://twitter.com/share?url=<%= @referral_link %>&text=Check out <%=  @collection.name %> on SokuNFT!" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=<%= @referral_link %>&caption=Check out <%=  @collection.name %> on SokuNFT!" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fab fa-facebook"></i></a>
+                <a href="https://telegram.me/share/url?url=<%= @referral_link %>&text=Check out <%=  @collection.name %> on SokuNFT!" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fas fa-paper-plane"></i></a>
+                <a href="mailto:?subject=<%=  @collection.name %>&body=<%= @collection.description %> Link here:<%= @referral_link %>"><i class="fas fa-envelope"></i></a>
+                <p class="is-hidden" id="copyUrl"><%= @referral_link %></p>
+                <div class="copy-text modal-copy-text">
+                  <button class="modal-copied"><span class="hvr-float" onclick="copyToClipboard('#copyUrl')"><i class="fas fa-link"></i></span></button>
+                </div>
+              </div>
+            <% else %>
+              <p>
+                <a href="<%= generate_referral_for_collection_path(collection_id: @collection.id)  %>"> Generate referral link </a>
+              </p>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+
+    </div>
+
+    <%# <div class="modal-footer">
+              <button class="modal-close modal-btn modal-toggle">View NFT</button>
+          </div> %>
+
+  </div>
+</div>
+
+<span id="eth_balance" class="curEthBalance hide">0.0</span>
+<span id="erc20_balance" class="curErc20Balance hide">0.0</span>
+<span id="BuyerserviceFee" class="hide"><%= buyer_service_fee %></span>
+<span id="SellerserviceFee" class="hide"><%= seller_service_fee %></span>
+<span id="contractType" class="hide"><%= @collection.nft_contract&.contract_type %></span>
+<span id="contractAddress" class="hide"><%= @collection.nft_contract&.address %></span>
+<%= hidden_field_tag 'token', @collection.token %>
+<%= hidden_field_tag 'sale_on', @collection.put_on_sale? %>
+<%= hidden_field_tag 'instant_sale_enabled', @collection.instant_sale_enabled %>
+
+<div class="user-wrapper">
+  <div class="user-container">
+    <div class="profile-container">
+
+      <div class="profile-item">
+        <% if @collection.attachment.content_type == 'video/mp4'%>
+          <div class="profile-video">
+            <video autoplay controls controlslist="nodownload" loop playsinline preload="metadata" style="object-fit: contain; border-radius: initial; width: 100%">
+              <source src="<%= url_for(@collection.attachment) %>" type="video/mp4">
+            </video>
+          </div>
+
+        <%elsif @collection.attachment.content_type == 'audio/mpeg'%>
+          <div class="profile-img">
+              <%= image_tag cover_url(@collection), class: 'anibouncein animation-element' %>
+              <audio autoplay controls controlslist="nodownload" loop playsinline preload="metadata" style="object-fit: contain; border-radius: initial; width: 100%">
+                <source src="<%= url_for(@collection.attachment) %>" type="video/mp4">
+              </audio>
+          </div>
+        <% else %>
+          <div class="profile-img">
+            <%= image_tag cover_url(@collection), class: 'anibouncein animation-element' %>
+          </div>
+        <%end%>
+        <div class="card-effect auction-continer">
+          <% if @collection.auction_running? || @collection.auction_further? %>
+            <ul class="asset__authors custom-styles collection-default-ul">
+              <li class="second-child border-left-sec-child">
+                <%= hidden_field_tag 'collection[end_time]', @collection.end_time, class:'timed-action-trigger', data: { 'address': @collection.address, 'collection-show': true, 'future-time': @collection.start_time.future? ? true : false } %>
+                <%= hidden_field_tag @collection.address + '_start_time', @collection.start_time.strftime("%b %d %Y %H:%M:%S %Z") %>
+                <%= hidden_field_tag @collection.address + '_end_time', @collection.end_time.strftime("%b %d %Y %H:%M:%S %Z") %>
+                <%= hidden_field_tag 'timezone_offset' %>
+                <div style="display:none" class="end-action"><%=t('collections.show.action_ended') %></div>
+                <div style="display:none" class="refresh-action"><%=t('collections.show.refresh_screen') %></div>
+                <div id="timedAuction-countdown">
+                  <div id="future_timedAuction" class="hide">
+                    <%= t('collections.show.action_starts')  %>
+                  </div>
+                  <div id="current_timedAuction" class="hide">
+                    <%= t('collections.show.action_ends') %>
+                  </div>
+                  <ul class="my-collection">
+                    <li class="tA-color"><span id="tA-days"></span>Days</li>
+                    <li class="tA-color"><span id="tA-hours"></span>Hours</li>
+                    <li class="tA-color"><span id="tA-minutes"></span>Minutes</li>
+                    <li class="tA-color"><span id="tA-seconds"></span>Seconds</li>
+                  </ul>
+                </div>
+              </li>
+            </ul>
+          <% elsif @collection.auction_ended? %>
+            <ul class="asset__authors custom-styles collection-default-ul">
+              <li class="second-child border-left-sec-child">
+                <div id="timedAuction-countdown">
+                  <%=t('collections.show.action_ended') %>
+                </div>
+              </li>
+            </ul>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="profile-item">
+        <%# flex %>
+        <div class="profile-diamond">
+          <div class="diamond-item anifadeleft animation-element">
+            <%= image_tag 'nft-diamond.svg' %>
+            <h3>Ethereum</h3>
+          </div>
+          <div class="diamond-item anifaderight animation-element">
+            <ul class="heart-like">
+              <% if current_user %>
+                <li><%= react_component("collections/like", address: current_user&.address, isLiked: @collection&.isLiked?(current_user&.id), collectionId: @collection.id, likes_count: @collection.likes.length) %></li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+
+        <%# flex %>
+        <div class="profile-title anifadeup animation-element">
+          <div class="title-item">
+            <h2><%= @collection.title %>  <br/>
+                <%= @collection.total_editions %></h2>
+          </div>
+        </div>
+
+        <%# flex %>
+        <div class="profile-related anifadeup animation-element">
+            <div class="related-item card-effect "> <%# flex %>
+              <div class="related-item-img">
+                <%= image_tag @collection.creator.profile_image, class: 'item-coll-img' %>
+                <%= image_tag("approved-icon.svg", class: "item-approved") if @collection.creator.is_verified? %>
+              </div>
+              <div class="related-item-title">
+                <p>Creator
+                  <span class="anibouncein animation-element">
+                    <% if @collection.royalty && @collection.royalty > 0 %>
+                      <%= @collection.royalty %>% royalities
+                    <% end %>
+                  </span>
+                </p>
+                <h3><a href="<%=user_path(:id=>@collection.creator.address)%>">@<%=@collection.creator.full_name%></a></h3>
+              </div>
+            </div>
+          <div class="related-item card-effect "> <%# flex %>
+            <div class="related-item-img">
+              <%if @collection.nft_contract.present?%>
+                <% if @collection.nft_contract.attachment&.url.present? %>
+                  <%= image_tag @collection.nft_contract&.attachment&.url, class: 'item-coll-img' %>
+                  <%= image_tag("approved-icon.svg", class: "item-approved") if @collection.creator.is_verified? %>
+                <% else %>
+                  <%= image_tag 'avatar-img.png', class: 'item-coll-img' %>
+                <% end %>
+              <%end%>
+
+            </div>
+            <div class="related-item-title">
+              <p>Collection
+                <span class="anibouncein animation-element">
+                  <% if @collection.royalty && @collection.royalty > 0 %>
+                    <%= @collection.royalty %>% royalities
+                  <% end %>
+                </span>
+              </p>
+              <h3><a href="<%=contract_path(@collection)%>"><%= @collection.nft_contract.name %></a></h3>
+            </div>
+          </div>
+        </div>
+
+        <%# On sale for  %>
+        <div class="more-act-block card-effect anifadeup animation-element">
+
+          <%# Actions minimals/checks %>
+
+          <% if current_user && @collection.is_owner?(current_user) && @collection.state != "burned" %>
+            <div class="more_action_block nft-more-option">
+              <div class="nft-more-item">
+                <a class="more_action_btn btn-effect" href="javascript:void(0);" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <%# <i class="fas fa-ellipsis-v"></i> <%= t('collections.show.more_options') %>
+                  Edit
+                </a>
+                <ul class="dropdown-menu card-effect header__profile-menu" aria-labelledby="dropdownMenuProfile">
+                  <% if current_user && current_user.is_approved? %>
+                    <% if @collection.put_on_sale? %>
+                      <li><a href="javascript:void(0)" onclick="window.show_modal('#removeSaleModal')"><%= t('collections.show.remove_from_sale')%></a></li>
+                    <% else %>
+                      <li><a href="javascript:void(0)" class="change-price" onclick="window.show_modal('#change-price')"><%= t('shared.put_on_sale')%></a></li>
+                    <% end %>
+                    <% if @collection.end_time.nil? %>
+                      <li><a href="javascript:void(0)" class="change-price" onclick="window.show_modal('#change-price')" ><%= t('collections.show.change_price')%></a></li>
+                    <% end %>
+                    <% if !@collection.is_lazy_minted? %>
+                      <li><a href="javascript:void(0)"  class="transfer-token" onclick="window.show_modal('#transferTokenForm')" ><%= t('collections.show.transfer_token')%></a></li>
+                      <li><%= link_to "Burn token", 'javascript:void(0)', 'onclick': "window.show_modal('#burnModal')" %></li>
+                    <% end%>
+                  <% else %>
+                    <% if @collection.put_on_sale? %>
+                      <li><a href="" class="pending-admin-approval"><%= t('collections.show.remove_from_sale')%></a></li>
+                    <% else %>
+                      <li><a href="javascript:void(0)" class="pending-admin-approval change-price"><%= t('shared.put_on_sale')%></a></li>
+                    <% end %>
+                    <li><a href="javascript:void(0)" class="pending-admin-approval change-price" ><%= t('collections.show.change_price')%></a></li>
+                    <% if !@collection.is_lazy_minted? %>
+                      <li><a href="javascript:void(0)"  class="pending-admin-approval transfer-token" ><%= t('collections.show.transfer_token')%></a></li>
+                      <li><a href="javascript:void(0)"  class="pending-admin-approval" ><%= t('collections.show.burn_token')%></a></li>
+                    <% end %>
+                  <% end %>
+                </ul>
+                <% if @collection.referral_percentage.present? %>
+                  <% if current_user.present? && !@referral_link%>
+                    <div class="title-item">
+                      <span class="btn-effect refer-button">
+                        Refer
+                      </span>
+                    </div>
+                  <%elsif current_user.present? && @referral_link %>
+                    <div class="title-item other-usr">
+                      <span class="btn-effect refer-button">
+                        View Referral
+                      </span>
+                    </div>
+                  <% end %>
+                <%end%>
+              </div>
+
+              <div class="nft-more-item">
+                <%= render partial: 'collections/share_media', referral_link: @referral_link %>
+              </div>
+            </div>
+          <%else%>
+            <div class='share-edit-section'>
+              <% if @collection.referral_percentage.present? %>
+                <% if current_user.present? && !@referral_link%>
+                  <div class="title-item other-usr">
+                    <span class="btn-effect refer-button">
+                      Refer
+                    </span>
+                  </div>
+                <%elsif current_user.present? && @referral_link %>
+                  <div class="title-item other-usr">
+                    <span class="btn-effect refer-button">
+                      View Referral
+                    </span>
+                  </div>
+                <% end %>
+              <%end%>
+
+              <div class="social-nft-more more_action_block nft-more-item">
+                <%= render partial: 'collections/share_media', referral_link: @referral_link %>
+              </div>
+            </div>
+          <%end%>
+
+          <!--<div class="dropdown_btnbox">
+                  <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      View proof of authenticity
+                    </button>
+                    <div class="dropdown-menu card-effect" aria-labelledby="dropdownMenuButton">
+
+
+                    </div>
+                  </div>
+                </div>-->
+
+          <div class="dropdown proof_auth">
+            <a data-toggle="dropdown" class="proof-btn proof_auth_btn btn-effect" href="javascript:void(0);">
+              View proof of authenticity <i class="fa fa-angle-down" aria-hidden="true"></i>
+            </a>
+            <div class="dropdown-menu card-effect proof_auth proof-authencity">
+              <a target="_blank" href="<%= "https://gateway.pinata.cloud/ipfs/#{@collection.image_hash}" %>"><span class="redirect_box"><i class="fa fa-cube" aria-hidden="true"></i>View on IPFS </span> <i class="fa fa-external-link" aria-hidden="true"></i></a>
+              <% if @collection.transaction_hash.present? %>
+                <a target="_blank" href="<%= "#{Rails.application.credentials.config[:etherscan_url]}/tx/#{@collection.transaction_hash}" %>"><span class="redirect_box"><%= image_tag 'eth_ico.svg', class: 'eth_ico' %>View on Etherscan </span> <i class="fa fa-external-link" aria-hidden="true"></i></a>
+              <% end %>
+            </div>
+          </div>
+
+          <%# Description Block %>
+          
+          <div class="asset__desc card-effect">
+            <!-- <h2><%#= t('collections.show.descriptions')%></h2> -->
+            <!--<p><pre><%= @collection.description %></pre></p>-->
+            <div class='desc'>
+              <i class="fa-regular fa-book"></i>
+              <p>Description</p>
+            </div>
+
+            <div class="inner-token-content-han coll_description short_content"><%= truncate(@collection.description, :length => 150, :separator => ' ') %></div>
+            <div class="inner-token-content-han coll_description full_content"><%= @collection.description %></div>
+            <% if @collection.description.length >= 150 %>
+              <span class="readMrBtnBlk readMrtext">
+                <a href="javascript:void(0);" class="readmore_link readmore-btn"><i class="fa fa-angle-down" aria-hidden="true"></i></a>
+                <a href="javascript:void(0);" class="readmore_link readless-btn"><i class="fa fa-angle-up" aria-hidden="true"></i></a>
+              </span>
+            <%end%>
+
+            <% if @collection.owner == current_user && @collection.unlock_on_purchase && @collection.unlock_description.present? %>
+              <p><%= @collection.unlock_description %></p>
+            <% end %>
+          </div>
+          
+
+          <% #if @collection.put_on_sale? %>
+          <% if @max_bid%>
+            <div class="asset__wrap">
+              <div class="asset__timer asset__price card-effect high-lowest">
+                <span><%= t('collections.show.highest_bid') %></span>
+                <span><%= @max_bid.bid_price %></span>
+              </div>
+
+              <div class="asset__price card-effect high-lowest">
+                <span><%= t('collections.show.lowest_bid') %></span>
+                <span><%= @collection.min_bid.bid_price %></span>
+              </div>
+            </div>
+          <%end%>
+          <% # end %>
+
+          <!-- actions -->
+          <div class="asset__desc card-effect">
+            <div class='current_price'>
+              <i class="fa-solid fa-tags"></i>
+              <p>Current Price</p>
+            </div>
+            <h3 class='current_price__amount'><%= @collection.title_desc %></h3>
+          </div>
+          <% if not is_collection_owner %>
+            <div class="onsale-for" id="collection-actions">
+              <% # if @collection.allowed_for_instant_buy? %>
+              <div class="asset__btns text-center">
+                <% if current_user&.is_approved && @collection.instant_sale_enabled? && !@collection.timed_auction_enabled?%>
+                  <% can_buy = true %>
+                <% elsif current_user&.is_approved && @collection.instant_sale_enabled? && @collection.timed_auction_enabled?  && @collection.auction_running? %>
+                  <% can_buy = true %>
+                <% else %>
+                  <% can_buy = false %>
+                <% end %>
+                <% if can_buy && params[:token].present? %>
+                  <span class="hvr-float">
+                    <a href="javascript:void(0)" onclick="window.show_modal('#Buy-modal')" class="buy-now crypto-buy home__btn home__btn--clr btn-effect">Buy from Referral</a>
+                  </span>
+                  <span class="hvr-float">
+                      <a href="javascript:void(0)" onclick="window.show_modal('#credit-card-modal')" class="buy-now buy-with-credit-card home__btn home__btn--clr btn-effect">Buy with Credit Card</a>
+                  </span>
+                  <%= hidden_field_tag 'referred_collection', @collection.address %>
+                  <%= hidden_field_tag 'referral_link_params', params[:token] %>
+                  <%= hidden_field_tag 'prioritized_collection_referral_fee', @collection_referral_fee %>
+                <% elsif can_buy %>
+                  <span class="hvr-float">
+                    <a href="javascript:void(0)" onclick="window.show_modal('#Buy-modal')" class="buy-now crypto-buy home__btn home__btn--clr btn-effect">Buy</a>
+                  </span>
+                    <span class="hvr-float">
+                      <a href="javascript:void(0)" onclick="window.show_modal('#credit-card-modal')" class="buy-now buy-with-credit-card home__btn home__btn--clr btn-effect">Buy with Credit Card</a>
+                    </span>
+                <% elsif !current_user&.is_approved && @collection.instant_sale_enabled? && @collection.auction_running? %>
+                  <span class="hvr-float">
+                    <a href="" class="btn-effect sale-type pending-admin-approval buy-approval">Buy</a>
+                  </span>
+                    <span class="hvr-float">
+                      <a href="" class="btn-effect sale-type pending-admin-approval buy-approval">Buy With Credit Card</a>
+                    </span>
+                <% end %>
+                <% # end %>
+                <% if @collection.allow_bid? && !@collection.timed_auction_enabled? %>
+                  <% can_bid = true %>
+                <% elsif @collection.allow_bid? && @collection.timed_auction_enabled?  && @collection.auction_running? %>
+                  <% can_bid = true %>
+                <% else %>
+                  <% can_bid = false%>
+                <% end %>
+                <%if can_bid && !@collection.is_lazy_minted? %>
+                  <% if current_user&.is_approved %>
+                    <% if params[:token].present? %>
+                      <span class="hvr-float">
+                        <a href="javascript:void(0)" onClick="window.show_modal('#Bid-modal')" class="btn-effect sale-type place-bid"><%= t('shared.place_a_bid_by_referral') %></a>
+                      </span>
+                    <% else %>
+                      <span class="hvr-float">
+                        <a href="javascript:void(0)" onClick="window.show_modal('#Bid-modal')" class="btn-effect sale-type place-bid"><%= t('shared.place_a_bid') %></a>
+                      </span>
+                    <% end %>
+                  <% end %>
+                </div>
+              <%end%>
+            </div>
+          <%end%>
+          <!-- end actions -->
+
+          <%# <ul>
+                    <li><a class="sale-type hvr-float" href="">Buy now</a></li>
+                    <li><a class="onsale-btn hvr-float" href="">Place a bid</a></li>
+                </ul> %>
+
+          <%# modal %>
+          <div class="modal-place modal-step">
+            <div class="modal-overlay modal-toggle modal-close"></div>
+            <div class="modal-wrapper modal-transition card-effect">
+
+              <div class="modal-head">
+                <h2 class="head-con modal-heading">Follow Steps</h2>
+                <button class="head-con modal-toggle"><i class="modal-close fas fa-times"></i></button>
+              </div>
+
+              <div class="modal-body modal-step">
+                <form action="" method="">
+                  <div class="form-group card-effect">
+                    <div class="form-group-item">
+                      <div class="progress-track">
+                        <input type="checkbox" class="form-control" id="approved">
+                        <label for="approved"></label>
+                      </div>
+                    </div>
+                    <div class="form-group-item">
+                      <h4>Approve asset</h4>
+                      <p>This transaction is conducted only once per assets type</p>
+                    </div>
+                  </div>
+                  <div class="form-group card-effect">
+                    <div class="form-group-item">
+                      <div class="progress-track">
+                        <input type="checkbox" class="form-control" id="purchase">
+                        <label for="purchase"></label>
+                      </div>
+                    </div>
+                    <div class="form-group-item">
+                      <h4>Purchase</h4>
+                      <p>This transaction is conducted only once per assets type</p>
+                    </div>
+                  </div>
+                </form>
+
+              </div>
+              <div class="modal-footer">
+                <button class="modal-close modal-btn modal-toggle">Cancel</button>
+              </div>
+
+            </div>
+          </div>
+
+          <%# Modal Choose type %>
+          <%# <div class="modal-place modal-type">
+                    <div class="modal-overlay modal-toggle modal-close"></div>
+                    <div class="modal-wrapper modal-transition card-effect">
+
+                        <div class="modal-head">
+                            <h2 class="head-con modal-heading">Put on Sale</h2>
+                            <button class="head-con modal-toggle"><i class="modal-close  fas fa-times"></i></button>
+                        </div>
+
+                        <div class="modal-body modal-step">
+                            <p>Choose sale type</p>
+                            <div class="step-item-con">
+                                <div class="step-item">
+                                    <a href="">
+                                        <img src="/assets/f-price.svg" alt="">
+                                        <h3>Fixed price</h3>
+                                    </a>
+                                </div>
+
+                                <div class="step-item">
+                                    <a href="">
+                                        <img src="/assets/bids.svg" alt="">
+                                        <h3>Open for bid</h3>
+                                    </a>
+                                </div>
+
+                                <div class="step-item">
+                                    <a href="">
+                                        <img src="/assets/clock.svg" alt="">
+                                        <h3>Timed auction</h3>
+                                    </a>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div> %>
+
+        </div>
+
+        <%# On sale for  %>
+        <div class="profile-det-tabs card-effect anifadeup animation-element">
+
+          <ul class="sko-hero-tab">
+            <li data-tc="details" class="active"><a href="javascript:void(0)">Details</a></li>
+            <li data-tc="bids" ><a href="javascript:void(0)">Bids</a></li>
+            <li data-tc="history" ><a href="javascript:void(0)">History</a></li>
+          </ul>
+
+          <%#This is Details tab. %>
+          <div class="profile-tabs-det" data-tc="details">
+              <h3 class="p-pro-title">Owner</h3>
+              <div class="profile-owner-det">
+                <div class="pro-owner-img">
+                  <%= image_tag @collection.owner.profile_image %>
+                </div>
+                <div class="pro-owner-token">
+                  <h3><%= @collection.owner.full_name %></h3>
+                </div>
+              </div>
+            <%if @collection.data.present? || @collection.properties.present? %>
+              <div class="profile-properties">
+                <h3 class="p-pro-title">Properties</h3>
+                <div class="properties-container">
+
+                  <% @collection.properties&.map do |property_key, property_value| %>
+                    <% if !property_key.blank? %>
+                      <div class="pro-con-item">
+                        <p class="pro-armor"><%= "#{property_key}" %></p>
+                        <h3><%= "#{property_value}" %></h3>
+                        <p class="pro-rarity" ><%= property_rarity(property_key, property_value) %>% have this trait</p>
+                      </div>
+                    <% end %>
+                  <%end%>
+
+                </div>
+              </div>
+            <%end%>
+          </div>
+
+          <%# This is Bids tab May be need to change after the getting proper data %>
+          <div class="profile-tabs-det is-hidden" data-tc="bids">
+            <% if @collection.bids.pending.present? %>
+              <%@collection.bids.pending.each do|bid|%>
+                <div class="asset__action asset__action--verified">
+                  <%= image_tag url_for(bid.user.profile_image)%>
+                  <p>Bid placed for <b><%=bid.crypto_currency%> <%=bid.crypto_currency_type%> (Quantity: <%=bid.quantity%>) </b> <%= time_ago_in_words(bid.created_at) %> ago <br>
+                    by <%= link_to bid.user.full_name, user_path(bid.user.address)%> </p>
+
+                  <%if current_user&.is_approved? && is_collection_owner %>
+                    <%= hidden_field_tag 'referrer_address_for_bid', get_bid_referrer_address(bid) %>
+                    <%= hidden_field_tag 'prioritized_collection_referral_fee', @collection_referral_fee %>
+                    <p class="para-color ml-auto">
+                      <%= link_to 'Execute', 'javascript:void(0)', class: "execute-btn execButton btn-effect", bidId: bid.id, price: bid.amount, qty: bid.quantity, bidUser: bid.user.full_name, bidDetail: bid.desc, bidSymbol: bid.erc20_token&.symbol, erc20ContractAddress: bid.erc20_token&.address, nftContractAddress: bid&.collection&.nft_contract&.address %>
+                    </p>
+                  <%elsif !current_user&.is_approved? && is_collection_owner %>
+                    <p class="pending-admin-approval para-color">
+                      <%= link_to 'Execute', 'javascript:void(0)', class: "execute-btn" %>
+                    </p>
+                  <%end%>
+                </div>
+              <% end %>
+            <% else %>
+              <p class="mt-20"> No current bids.</p>
+            <% end %>
+          </div>
+
+          <%# This is History tab May be need to change after the getting proper data %>
+          <div class="profile-tabs-det is-hidden" data-tc="history">
+            <div class="asset__actions S" id="asset__actions--scroll" data-scrollbar="true" tabindex="-1" style="overflow: hidden; outline: none;">
+              <div class="scroll-content">
+                <% if @activities.present? %>
+                  <% @activities.each do |activity| %>
+                    <%= render "activities/collection_card_activity", activity: activity %>
+                  <% end %>
+                <% else %>
+                  <%= render partial: 'common/empty' %>
+                <% end %>
+
+              </div>
+              <!-- <div class="scrollbar-track scrollbar-track-x show" style="display: none;"><div class="scrollbar-thumb scrollbar-thumb-x" style="width: 524px; transform: translate3d(0px, 0px, 0px);"></div></div><div class="scrollbar-track scrollbar-track-y show" style="display: block;"><div class="scrollbar-thumb scrollbar-thumb-y" style="height: 101.407px; transform: translate3d(0px, 0px, 0px);"></div></div>-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%#% explore %>
+  <div class="show-wrapper">
+    <%#% title %>
+    <div class="sko-top-container ">
+      <div class="sko-top-item animatable fadeInLeft">
+        <h2>Other Items in Collection</h2>
+      </div>
+      <div class="sko-top-item animatable fadeInRight">
+        <ul>
+          <li class="show-btn-rights hvr-bounce-in"><span><i class="fas fa-chevron-left"></i></span></li>
+          <li class="show-btn-left hvr-bounce-in"><span><i class="fas fa-chevron-right"></i></span></li>
+        </ul>
+      </div>
+    </div>
+    <%#% end title %>
+
+    <div class="swiper showSwiper">
+      <div class="swiper-wrapper">
+        <%#% carousel %>
+        <% nft_contract = @collection.nft_contract %>
+        <%if nft_contract.present?%>
+          <% related_nfts = nft_contract.collections.where.not(id: @collection.id) %>
+          <% if related_nfts.on_sale.present? %>
+            <% related_nfts.on_sale.limit(10).each do |collection| %>
+              <%=render "collection_show_card", collection: collection%>
+            <%end%>
+          <% else %>
+            <div class="adjustment">
+              <%= render partial: 'common/empty' %>
+              <div>
+              <% end %>
+            <%end%>
+            <%#% end carousel  %>
+          </div>
+        </div>
+
+      </div>
+      <%#% end explore %>
+    </div>
+  </div>
+
+  <%= render partial: 'collections/price_change' %>
+
+  <%= render partial: 'collections/token_transfer' %>
+
+  <%= render partial: 'collections/bid_modal' %>
+
+  <%= render partial: 'collections/burn_modal' %>
+
+  <%= render partial: 'collections/remove_sale_modal' %>
+
+  <% if is_collection_owner %>
+    <%= render partial: 'collections/execute_bid' %>
+  <% end %>
+
+  <%= render partial: 'collections/buy_modal' %>
+  <%= render partial: 'collections/buy_from_referral' %>
+  <%= render partial: 'collections/credit_card_modal' %>
+  <%= javascript_include_tag('swiper-bundle.min.js') %>
+  <script>
+    var swiper = new Swiper(".swiper_slider", {
+      slidesPerView:4,
+      navigation: {
+        prevEl: ".swiper-prev",
+        nextEl: ".swiper-next"
+      },
+      spaceBetween: 30,
+      pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+      },
+      breakpoints: {
+      0: {
+          slidesPerView: 1
+      },
+      480: {
+          slidesPerView: 1
+      },
+      640: {
+          slidesPerView: 2
+      },
+      992: {
+          slidesPerView: 3
+      },
+      1280: {
+          slidesPerView: 4
+      }
+      }
+    });
+  </script>
+  <script src="https://momentjs.com/downloads/moment-timezone-with-data.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.7/jstz.min.js"></script>
+  <script type="text/javascript">
+    var time_zone = jstz.determine();
+    var momnt = moment.tz(Date.new, time_zone.name());
+    $("#timezone_offset").val(momnt.tz(time_zone.name()).format('Z'))
+
+    $(document).ready(function () {
+      $("#bid_amt, #bid_qty").on('input', function () {
+        calculateBid($('#BuyerserviceFee').text());
+      });
+      $("#bid_currency").change(function () {
+        calculateBid($('#BuyerserviceFee').text());
+      });
+      $("#buy_qty").on('input', function () {
+        calculateBuy($('#BuyerserviceFee').text());
+      });
+      $("#credit_card_buy_qty").on('input', function () {
+        calculateCreditCardBuy($('#BuyerserviceFee').text());
+      });
+
+      <% if @collection.single? %>
+        $(".buy-now").on('click', function (e) {
+          e.preventDefault();
+          $("#buy_qty").val(1);
+          $("#credit_card_buy_qty").val(1);
+          calculateBuy($('#BuyerserviceFee').text());
+          calculateCreditCardBuy($('#BuyerserviceFee').text());
+        });
+      <% end %>
+
+      $(document).on("change", "#collection-put-on-sale", function () {
+        if (!$(this).is(":checked")) {
+          $('#collection_instant_sale_enabled').prop("checked", false).change();
+          $('#collection-unlock-on-purchase').prop("checked", false).change();
+        }
+      })
+
+      $(document).on("change", "#collection_instant_sale_select", function () {
+        if ($(this).is(":checked")) {
+          $("#collection_instant_sale_price").closest(".row").removeClass("hide")
+        } else {
+          $("#collection_instant_sale_price").closest(".row").addClass("hide")
+        }
+      });
+
+      $(document).on("change", "#collection-unlock-on-purchase", function () {
+        if ($(this).is(":checked")) {
+          $(".unlock-description-section").removeClass("hide")
+        } else {
+          $(".unlock-description-section").addClass("hide")
+        }
+      });
+
+      <%if params[:act]%>
+        window.show_modal('#<%=params[:act]%>')
+      <%end%>
+
+      $('a[data-dismiss="modal"]').on('click', function(e) {
+        e.preventDefault();
+        $.magnificPopup.close();
+      });
+
+      $(document).on("change", "#collection_instant_sale_select", function () {
+        if ($(this).is(":checked")) {
+          $("#collection_instant_sale_price").closest(".row").removeClass("hide")
+        } else {
+          $("#collection_instant_sale_price").closest(".row").addClass("hide")
+        }
+      });
+
+      $(document).on("change", "#collection-unlock-on-purchase", function () {
+        if ($(this).is(":checked")) {
+          $(".unlock-description-section").removeClass("hide")
+        } else {
+          $(".unlock-description-section").addClass("hide")
+        }
+      });
+
+      $(document).on("change", "#collection-allow-bid", function () {
+        if ($(this).is(":checked")) {
+          $(".mini-bid-change-price").removeClass("hide")
+        } else {
+          $(".mini-bid-change-price").addClass("hide")
+        }
+      });
+
+    });
+  </script>

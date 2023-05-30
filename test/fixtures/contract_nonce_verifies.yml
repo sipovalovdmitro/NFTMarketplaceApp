@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contract_sign_address: MyString
+  contract_sign_nonce: MyString
+  network_id: 1
+  user_address: MyString
+
+two:
+  contract_sign_address: MyString
+  contract_sign_nonce: MyString
+  network_id: 1
+  user_address: MyString

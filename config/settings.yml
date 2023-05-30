@@ -1,0 +1,25 @@
+tokenURIPrefix: "https://gateway.pinata.cloud/ipfs/"
+transferProxyContractAddress: "0xd59c1c5652EbC95fe034Af5523C79ab4ACD19f93"
+wethAddress: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+sokuAddress: "0x4c3a8eceb656ec63eae80a4ebd565e4887db6160"
+sushiRouterAddress: "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F"
+tradeContractAddress: "0x6cc5d5a072418b8077388dd5b2e32008d72ca180"
+factoryContractAddressFor721: "0x66995694dDb8B83a323f476D3b6769A3778255A5"
+factoryContractAddressFor1155: "0xcc321bc5fde2a7a964053feaf5b009113c182e1f"
+ownTokenSymbol: ["SOKU"]
+ownTokenPrice: 1
+defaultNetwork: "mainnet"
+defaultNetworkId: 1
+# tokenURIPrefix: "https://gateway.pinata.cloud/ipfs/"
+# transferProxyContractAddress: "0xE05FDcBAE102D33EC384462f19418eCbb91D7239"
+# wethAddress: "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6"
+# sokuAddress: "0x3B15393E5F88913e5870Bb695DF43c408c127102"
+# sushiRouterAddress: "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506"
+# # tradeContractAddress: "0xc980e176895c9cd4a373afa196d19569c0fa0424"
+# tradeContractAddress: "0xd3881Dddd175F95FFDAc83F367c06022275AAAd4"
+# factoryContractAddressFor721: "0x27e6e1c3dc3b8012a0626560087d4190bc5eb359"
+# factoryContractAddressFor1155: "0xa3e8dca7ee23e814c4b60ec0ed7b6625e4a29f7f"
+# ownTokenSymbol: ["SOKU"]
+# ownTokenPrice: 1
+# defaultNetwork: "goerli"
+# defaultNetworkId: 5

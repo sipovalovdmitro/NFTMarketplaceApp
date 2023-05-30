@@ -1,0 +1,22 @@
+<%hidden_field_tag "contract_address", contract.address%>
+
+<div class="slide-col swiper-slide">
+  <a href="<%= nft_contract_path(contract.address)%>">
+    <div class="card-effect sko-top-collections hvr-float">
+      <div class="sko-hot-img">
+        <%= image_tag(contract.cover) if contract.cover.present? %>
+      </div>
+      <div class="skohot-content">
+        <div class="sko-coll-img">
+          <%= image_tag(contract.attachment, class: 'sko-coll-avatar') if contract.attachment.present? %>
+        </div>
+
+        <div class="sko-hot-title">
+          <h2 class="auc-title-item"><%= contract.name %></h2>
+          <%creator = contract.owner%>
+          <p><%= number_with_delimiter(number_with_precision(contract.calculate_volume(contract.address), precision: 3)) %> ETH</p>
+        </div>
+      </div>
+    </div>
+  </a>
+</div>

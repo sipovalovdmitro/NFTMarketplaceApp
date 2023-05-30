@@ -1,0 +1,65 @@
+<div class="main-content">
+  <div class="page-content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="page-title-box d-flex align-items-center justify-content-between">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm-6">
+                  <h4 class="card-title"><%= t("admin.partners.index.title") %></h4>
+                </div>
+                <div class="col-sm-2"></div>
+                <div class="col-sm-4">
+                  <%= link_to t("admin.partners.index.add_new"), new_admin_partner_path, class: "float-right" %>
+                </div>
+              </div>
+              <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                <thead>
+                  <tr>
+                    <!-- <th><%#= t("admin.featured_users.index.id") %></th> -->
+                    <th><%= t("admin.partners.index.name") %></th>
+                    <th><%= t("admin.partners.index.address") %></th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if @partners.present? %>
+                    <% @partners.each do |partner| %>
+                      <tr>
+                        <td><%= partner.user&.name %></td>
+                        <td><%= partner.address %></td>
+                        <td>
+                          <%= link_to t('shared.destroy'), admin_partner_path(partner), method: :delete, class: "pr-2" , :data => {:confirm => 'Are you sure?'}%>
+                        </td>
+                      </tr>
+                    <% end %>
+                  <% else %>
+                    <tr>
+                      <td colspan="4"><%= t(:no_records, scope: :admin) %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="flickr_pagination sko-pagination">
+            <%#= will_paginate @whitelisted_users %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,336 @@
+<main class="main m_home">
+  <%= render "common/home_header"%>
+  <div class="container">
+    <!-- Featured User Section Start -->
+    <% if @featured_users.present? %>
+      <div class="row row--grid space-bt-100">
+        <div class="col-12">
+          <div class="main__title">
+            <h2><%= t('dashboard.featured_users') %></h2>
+          </div>
+          <button class="main__nav main__nav--prev featu-swiper-prev" data-nav="#featured-user" type="button">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#041853" class="button__icon"><path d="M16 14L12 10L8 14" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </button>
+          <button class="main__nav main__nav--next featu-swiper-next" data-nav="#featured-user" type="button">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#041853" class="button__icon"><path d="M16 14L12 10L8 14" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </button>
+        </div>
+        <div class="col-12 carousel_com">
+          <div class="row row--grid">
+            <div class="col-12">
+              <div class="main__carousel-wrap">
+                <div class="swiper featu_swiper_slider">
+                  <div class="swiper-wrapper">
+                    <% @featured_users.each do |user|%>
+                      <div class="swiper-slide">
+                        <%= render "featured_user", user: user %>
+                      </div>
+                    <%end%>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    <!-- Featured User Section End -->
+    <div class="row row--grid space-bt-60">
+      <%= render 'top_referrals_dashboard' %>
+
+      <% if @top_collections.present? %>
+        <div class="top-collection-new">
+          <div class="new-col-item">
+            <h2>Top Collections</h2>
+          </div>
+        </div>
+
+        <div class="top-collection-tbl">
+          <table class="animatable fadeInUp">
+            <thead>
+              <tr>
+                <th class='tct-header-mobile' colspan="4">Collections</th>
+                <%# <th>Volume</th>
+                <th>Floor Price</th>
+                <th colspan="2">Referral Fee</th> %>
+              </tr>
+            </thead>
+            <% count = 0 %>
+            <tbody>
+              <%= hidden_field_tag 'top-collections', @top_collections.pluck(:id), id: 'top-collections' %>
+              <% @top_collections.each do |contract| %>
+                <% count = count + 1 %>
+                <tr class="hvr-float" >
+                  <td class="floor-not">
+                    <span><%= count %></span>
+                    <a href="<%= nft_contract_path(contract.address)%>">
+                      <% if contract.attachment.present? %>
+                        <%= image_tag contract.attachment_with_variant %>
+                      <% else %>
+                        <p>None</p>
+                      <% end %>
+                    </a>
+                    <% floor_price = contract.calculate_floor_price(contract.address) %>
+                    <div class=" nft-top-new-label">
+                      <a href="<%= nft_contract_path(contract.address)%>">
+                        <h4><%= contract.name %></h4>
+                      </a>
+                      <p class="floor-tbl-m">
+                        Floor:
+                        <%if floor_price.class == Float %>
+                          $<%= number_with_delimiter(floor_price.round(3)) %>
+                        <%else%>
+                          <%= floor_price[:amount] || 'None' %> <%= floor_price[:currency] %>
+                        <%end%>
+                      </p>
+                      <%# <p class="sko-tbl-mobile">(0.5 ETH)</p> %>
+                    </div>
+                  </td>
+                  <td class='volume truncate-value'>
+                    <p class="tbl-heading">Volume</p>
+                    <% volume = number_with_precision(usd_to_eth(contract.calculate_volume(contract.address)), percision: 2) %>
+                    <!-- <span class="full-value" id="collection-full-price-<%= contract.id %>">0 ETH</span>
+                    <p class="hvr-truncate"><span id="collection-hvr-price-<%= contract.id %>">0</span> ETH</p> -->
+                    <!-- <span class="full-value"><%= '%.10f' % usd_to_eth(contract.calculate_volume(contract.address)).round(10) %>  ETH</span> -->
+                    <p class="hvr-truncate"><%= number_with_delimiter(volume) %> ETH</p>
+                  </td>
+                  <td class="floor-col floor-truncate-value truncate-value">
+                    <p class="tbl-heading">Avg. Price</p>
+                    <% avg_price = number_with_precision(total_collection_avgPrice(contract), precision: 3) %>
+                    <%if avg_price && avg_price.to_f > 0 %>
+                      $<%= number_with_delimiter(avg_price) %>
+                    <% else %>
+                      -
+                    <%end%>
+                  </td>
+                  <td class="referral-percentage">
+                    <p class="tbl-heading">Referral</p>
+                    <div class="referal-p-pop">
+                      <% if contract.referral_percentage.present? %>
+                        <p><%= contract.referral_percentage %>%</p>
+                      <% end %>
+                      <%= link_to nft_contract_path(contract.address), class: "social-btn" do %>
+                        <i class="fas fa-external-link-alt"></i>
+                      <% end %>
+                    </div>
+                    <%# Modal Confirmation %>
+                    <% referral_link = set_referral_token(contract) %>
+                    <div class="modal-place modal-confirm col-new-popup">
+                      <div class="modal-overlay modal-toggle modal-close"></div>
+                      <div class="modal-wrapper modal-transition card-effect">
+
+                        <div class="modal-body modal-step">
+                          <div class="item-det-con card-effect">
+                            <% if contract.attachment.present? %>
+                              <%= image_tag contract.attachment %>
+                            <% end %>
+                            <h3><%= contract.name %></h3>
+                          </div>
+
+                          <div class="status-tbl">
+                            <div class="status-item">
+                              <% if current_user.present? %>
+                                <% if contract.referrals.un_used.present? && is_active_user_link(contract.id , current_user.id) %>
+                                  <b>
+                                    Referral Fee: <%= contract&.referral_percentage %>%
+                                  </b>
+                                  <p>
+                                    <%= referral_link %>
+                                  </p>
+
+                                  <div class="sko-social">
+                                    <a href="https://twitter.com/share?url=<%= referral_link %>&text=Check out <%=  contract.name %> on SokuNFT!" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fab fa-twitter"></i></a>
+                                    <a href="https://www.facebook.com/sharer/sharer.php?u=<%= referral_link %>&caption=Check out <%=  contract.name %> on SokuNFT!" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fab fa-facebook"></i></a>
+                                    <a href="https://telegram.me/share/url?url=<%= referral_link %>&text=Check out <%=  contract.name %> on SokuNFT!" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fas fa-paper-plane"></i></a>
+                                    <a href="mailto:?subject=<%=  contract.name %>&body=<%= contract.description %> Link here:<%= referral_link %>"><i class="fas fa-envelope"></i></a>
+                                    <a href="mailto:?subject=<%=  contract.name %>&body=<%= contract.description %> Link here:<%= referral_link %>"><i class="fas fa-envelope"></i></a>
+                                    <p class="is-hidden" id="copyUrl"><%= referral_link %></p>
+                                    <div class="copy-text">
+                                      <button class="btn-copied"><span class="hvr-float" onclick="copyToClipboard('#copyUrl')"><i class="fas fa-link"></i></span></button>
+                                    </div>
+                                  </div>
+                                </div>
+                              <% else %>
+                                <p>
+                                  <a href="<%= generate_referral_for_contract_path(nft_contract_id: contract.id, root_page: "yes")  %>"> Generate referral link </a>
+                                </p>
+                              <% end %>
+                            </div>
+                          </div>
+                        <% end %>
+
+                      </div>
+
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+        <div class="explore-load-more animatable fadeInUp">
+          <a href="/rankings" data-page-no="2" category="" class="hvr-float btn-effect">Load More</a>
+        </div>
+      </div>
+    <% end %>
+
+    <%# New Style Top Collection %>
+    <div class="col-12">
+      <%# Explore %>
+      <% collections_list = [] %>
+      <% collections_list << @category_collections.active_timed_auction if @category_collections.active_timed_auction.present? %>
+      <% collections_list << @category_collections.no_timed_auction if @category_collections.no_timed_auction.present? %>
+      <% if collections_list.present? %>
+        <div class="explore-container content-div">
+          <div class="sko-explore sko-top-container animate__animated animate__fadeInUp">
+
+            <div class="explore-item anifadeleft animation-element">
+              <h2>Explore</h2>
+            </div>
+
+            <div class="explore-item animatable fadeInRight">
+              <fieldset class="hvr-bob">
+                <%# <legend>Sort by</legend> %>
+                <a href="/search" class="sko-view-all">View All</a>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+
+        <div class="tabs-explore content-div">
+          <div class="sko-tabs-items tab-explore ">
+            <% collections_list.flatten! %>
+            <% collections_list.sort_by!(&:created_at).reverse! %>
+            <% collections_list.each do |collection| %>
+              <%= render "dashboard/collection_card", collection: collection %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+      <% if @category_collections.active_timed_auction.present? || @category_collections.no_timed_auction.present? %>
+        <% if params[:page].to_i < @category_collections.total_pages %>
+          <div class="explore-load-more anifadedown animation-element">
+            <a href="/search" data-page-no="2" category="" class="hvr-float btn-effect">Load More</a>
+          </div>
+        <% end %>
+      <% end %>
+      <%# End of Explore %>
+    </div>
+    <div class="col-12 ">
+      <div class="tabs-content content-div">
+        <div id="top-id">
+          <%#Rendering top collections%>
+        </div>
+      </div>
+
+      <%# End of New style Top Collection %>
+      <%# Top live auctions %>
+      <% if @hot_bids.present? %>
+        <div class="auction content-div">
+          <div class="sko-top-container animatable fadeInLeft">
+            <div class="sko-top-item">
+              <h2>Top live auctions</h2>
+            </div>
+          </div>
+          <div class="sko-tabs-items animatable fadeInLeft">
+            <% @hot_bids.each do |collection|%>
+              <%= render "dashboard/collection_card", collection: collection %>
+            <%end%>
+          </div>
+          <div>
+          <%end%>
+
+          <%# End of Top live auctions %>
+          <%# Top live auctions/contract %>
+          <%if @own_contract.present? %>
+            <div class="auction sko-hot-collection">
+
+              <div class="sko-top-container ">
+
+                <div class="sko-top-item animatable fadeInLeft">
+                  <h2>Collections</h2>
+                </div>
+
+                <div class="sko-top-item animatable fadeInRight">
+                  <ul>
+                    <li class="swiper-btn-rights hvr-bounce-in"><span><i class="fas fa-chevron-left"></i></span></li>
+                    <li class="swiper-btn-left hvr-bounce-in"><span><i class="fas fa-chevron-right"></i></span></li>
+                  </ul>
+                  <a href="/all-collections" class="hvr-skew-forward">View All</a>
+                </div>
+
+              </div>
+
+              <div class="sko-tabs-items top-auction animatable fadeInRight">
+
+                <div class="swiper topSwiper">
+                  <div class="swiper-wrapper">
+                    <%@own_contract.each do |single_contract|%>
+                      <%= render 'dashboard/own_contract', contract: single_contract %>
+                    <%end%>
+                  </div>
+                  <div class="swiper-pagination"></div>
+                </div>
+
+              </div>
+
+            </div>
+          <%end%>
+          <%# End of Top live auctions %>
+        </div>
+      </div>
+
+      <script src="https://momentjs.com/downloads/moment-timezone-with-data.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.7/jstz.min.js"></script>
+      <%= javascript_include_tag('swiper-bundle.min.js') %>
+
+      <script>
+        var time_zone = jstz.determine();
+        var momnt = moment.tz("2013-11-18 11:55", time_zone.name());
+        $("#timezone_offset").val(momnt.tz(time_zone.name()).format('Z'))
+        <%# $('.days-tabs li').on('click', function(event) {
+          event.preventDefault();
+          $.ajax({
+            type: "GET",
+            url: "/top_collections",
+            data: { days: event.currentTarget.dataset.day },
+            success: function(result) {
+              $('#top-id').html(result)
+            },
+            failure: function() {console.log("failure")}
+          });
+        }); %>
+        $(document).ready(function(){
+          const faetu_swiper = new Swiper('.featu_swiper_slider', {
+            speed: 400,
+            spaceBetween: 200,
+            navigation: {
+              nextEl: ".featu-swiper-next",
+              prevEl: ".featu-swiper-prev",
+            },
+            autoplay: {
+              delay: 5000,
+              disableOnInteraction: true
+            }
+          });
+          $.ajax({
+            url: "/top_collection_prices",
+            type: 'GET',
+            data: { 'collection_ids': $('#top-collections')?.val()?.split(" ") },
+            success: (response) => {
+              for(keyId in response?.collections){
+                $('#collection-floor-price-'+keyId).text(response.collections[keyId].floor_price);
+                $('#collection-full-price-'+keyId).text(response.collections[keyId].full_price);
+                $('#collection-hvr-price-'+keyId).text(response.collections[keyId].hvr_price);
+              }
+              return
+            },
+            error: (response) => {
+              console.log(response)
+              return
+            }
+          });
+        });
+      </script>
+    </div>
+  </main>

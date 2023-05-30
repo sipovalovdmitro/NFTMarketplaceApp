@@ -1,0 +1,605 @@
+<%#  Old Code %>
+<% if !@nft.nil? %>
+  <script>
+    $(function(){
+      $('.triggerCollectionValidation').text('List')
+      $("#collection-type").hide();
+      const imported = $("#collection_imported").val();
+      if(imported)
+        $("#minting-type").hide();
+        // Hide Properties section if none are present for imported NFTs
+        <%if @nft[:metadata]["attributes"].present? || @nft[:metadata]["properties"].present? %>
+          $(".properties-card").show()
+        <%else%>
+          $(".properties-card").hide()
+        <%end%>
+
+      const title = `<%= @nft[:title] %>`.replace('&#39;', "'")
+      // $("#royalties").parent().parent().hide();
+      $("#itemname").val(title);
+      $("#itemname").prop('disabled', true);
+      <% if @nft[:description].present? %>
+      const desc = `<%= @nft[:description] %>`.replace('&#39;', "'")
+        $("#description").val(desc);
+        $("#description").prop('disabled', true);
+      <% else %>
+        $("#description").prop('disabled', false);
+      <% end %>
+      $('#no_of_copies').val("<%= @nft[:num_copies] %>");
+      $('#no_of_copies').prop('disabled', true);
+      <% if ['audio/mp3', 'audio/webm', 'audio/mpeg'].include?(@nft[:file_type]) %>
+        <% nft_mp3_split = @nft[:url].split("://") %>
+        $("#imagePreviewRes").append('<audio width="300" height="300" controls=""><source src="<%= if nft_mp3_split[0] == 'ipfs' then "https://ipfs.io/ipfs/#{nft_mp3_split[1]}" else @nft[:url] end %>" id="audio_here"> </audio>');
+        dispalyPreviewImage();
+      <% elsif ['video/mp4', 'video/webm'].include?(@nft[:file_type]) %>
+        <% nft_video_split = @nft[:url].split("://") %>
+        $("#imagePreviewRes").append('<video width="300" height="200" controls=""><source src="<%= if nft_video_split[0] == 'ipfs' then "https://ipfs.io/ipfs/#{nft_video_split[1]}" else @nft[:url] end %>" id="video_here"> </video>');
+        dispalyPreviewImage();
+      <% else %>
+        <% nft_image_split = @nft[:metadata]['image'].split("://") %>
+        $("#imagePreviewRes").css({"background-image": "url(<%= if nft_image_split[0] == 'ipfs' then "https://ipfs.io/ipfs/#{nft_image_split[1]}" else @nft[:metadata]['image'] end %>)", "height": "225px", "width": "300px", "background-size": "cover", "background-repeat": "no-repeat", "background-position": "center center", "margin-left": "auto", "margin-right": "auto", "border-radius": "15px"});
+        $('#my-preview-section').attr('src', "<%= if nft_image_split[0] == 'ipfs' then "https://ipfs.io/ipfs/#{nft_image_split[1]}" else @nft[:metadata]['image'] end %>");
+        $('#my-preview-section').hide();
+        $('#my-preview-section').fadeIn(650);
+      <% end %>
+      $("#file-1").hide();
+      $('#placeholder').fadeOut(100);
+      $('#file-1').fadeOut(100);
+      $('#choose_file_selected').fadeOut(100);
+      $('#imagePreviewRes').hide();
+      $('#imagePreviewRes').fadeIn(650);
+    });
+
+    function dispalyPreviewImage() {
+      <% preview_url = if @nft[:preview_url].present? then @nft[:preview_url] else "banner-1.png" end%>
+      $('#my-preview-section').attr('src', "<%= preview_url %>");
+      $('.coverUpload').removeClass("hide");
+      $('#my-preview-section').hide();
+      $('#my-preview-section').fadeIn(650);
+      $('#imagePreviewRes2').attr('src', "<%= preview_url %>")
+      <% unless @nft[:preview_url].present? %>
+        $('#close-preview-button2').css('display', 'inline-block');
+      <% end %>
+      $('#placeholder2').fadeOut(100);
+      $('#file-2').fadeOut(100);
+      $('#choose_file_selected2').fadeOut(100);
+      $('#imagePreviewRes2').hide();
+      $('#imagePreviewRes2').fadeIn(650);
+    }
+  </script>
+<% end %>
+
+<div class="user-wrapper">
+  <div class="user-container single-container">
+
+    <div class="coll-head animatable fadeInLeft">
+      <h1 class='transform-capitalize'><%= t('collections.form.create_collection_tittle', collection_type: @collection_type) %></h1>
+    </div>
+
+    <div class="collection-part">
+
+      <%# Left Column %>
+      <div class="collection-item">
+
+        <div class="collection-con card-effect animatable fadeInUp"> <%# Flex %>
+          <div class="col-det-item">
+            <%= image_tag 'nft-diamond.svg', alt: 'ethereum' %>
+          </div>
+          <div class="col-det-item">
+            <p>Ethereum</p>
+            <h3><%= current_user.full_name %> <span class="connected">Connected</span></h3>
+          </div>
+        </div>
+
+        <!-- create form -->
+        <%= form_tag collections_path, method: :post, multipart: true, remote: true, authenticity_token: true, id: "collectionCreateForm" do %>
+          <%= hidden_field_tag 'collection[collection_type]', @collection_type %>
+          <%= hidden_field_tag 'collection[data]', nil, class: 'collection-data-val' %>
+          <%= hidden_field_tag 'collection[source]', if @nft.nil? then 'self' else 'opensea' end %>
+          <% unless @nft.nil? %>
+            <% attrs = if @nft[:metadata]["attributes"].present? %>
+            <% @nft[:metadata]["attributes"] %>
+          <% elsif @nft[:metadata]["properties"].present? %>
+            <% @nft[:metadata]["properties"] %>
+          <% else %>
+            <% nil %>
+          <% end %>
+          <% @response_attributes = get_response_attributes(attrs) %>
+          <%= hidden_field_tag 'collection[nft_link]', attrs %>
+          <%= hidden_field_tag 'collection[token]', @nft[:token] %>
+          <%= hidden_field_tag 'collection[total_copies]', @nft[:num_copies] %>
+          <%= hidden_field_tag 'collection[contract_address]', @nft[:contract_address] %>
+          <%= hidden_field_tag 'collection[contract_type]', @nft[:contract_type] %>
+          <%= hidden_field_tag 'collection[symbol]', @nft[:symbol] %>
+          <%= hidden_field_tag 'collection[imported]', true %>
+        <% end %>
+
+        <div class="col-upload card-effect animatable fadeInUp">
+          <h3>Upload file</h3>
+          <div class="upload-img">
+            <div class="codrops-header">
+              <div class="box">
+                <span class="placeholder" id="placeholder" style="">PNG, GIF, MP4 or MP3. Max 30mb.</span>
+                <input accept="image/png,image/jpeg,image/gif,video/mp4,video/webm,audio/mp3,audio/webm,audio/mpeg" type="file" name="collection[attachment]" id="file-1" class="sign__file-upload create_file_upload">
+                <label id="choose_file_selected" for="file-1"><span><%= image_tag 'upload-file.svg' %> Choose file</span></label>
+                <div id="imagePreviewRes"></div>
+                <div class="close-preview-button" id="close-preview-button">
+                  <span>X</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="coverUpload hide">
+          <label><%= t('collections.form.upload_cover') %><span> *</span></label>
+          <div class="row mb-15">
+            <div class="col-12">
+              <div class="codrops-header">
+                <div class="box">
+                  <span class="placeholder" id="placeholder2" style="">JPG, PNG, GIF. Max 30mb.</span>
+                  <input accept="image/png,image/jpeg,image/gif" type="file" name="collection[cover]" id="file-2" class="inputfile inputfile-1"/>
+                  <label id="choose_file_selected2" for="file-2"><span><%= t('collections.form.choose_file') %></span></label>
+                  <img id="imagePreviewRes2"></img>
+                <div class="close-preview-button" id="close-preview-button2"><span>X</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="after-minting card-effect animatable fadeInUp">
+        <div class="a-min-name card-effect">
+          <h3>Name</h3>
+          <input id="itemname" type="text" name="collection[name]" placeholder="Name of item" />
+        </div>
+
+        <div class="a-min-des card-effect">
+          <h3>Description</h3>
+          <textarea name="collection[description]" id="description" rows="2" placeholder="Provide an item description"></textarea>
+        </div>
+
+        <% if @collection_type == "multiple" %>
+          <%# <div class="col-12"> %>
+          <div class="a-min-des card-effect">
+            <h3><%= t('collections.form.number_of_copies') %></h3>
+            <% if !@nft.nil? %>
+              <input type="number" min="1" max="<%= @nft[:num_copies] %>" value="<%= @nft[:num_copies] %>" id="no_of_copies" name="collection[no_of_copies]" class="sign__input" placeholder="e.g 5" required></input>
+            <p style="font-size: 14px; font-weight:500; color: rgba(5, 30, 91, 0.4); margin-left: 2px;"> You only have <%= @nft[:num_copies] %> <%= if @nft[:num_copies].to_i > 1 then 'copies' else 'copy' end %></p>
+            <% else %>
+              <input type="number" min="1" id="no_of_copies" name="collection[no_of_copies]" placeholder="e.g 5"></input>
+          <% end %>
+        </div>
+        <%# </div> %>
+      <% end %>
+
+      <% if params[:contract_address].blank? && params[:token].blank? %>
+        <div class="col-upload royalties-card card-effect">
+          <div class="sign__group">
+            <h3 class="" for="royalties"><%= t('collections.form.royalties') %></h3>
+            <div class="percentage-old-section">
+              <input id="royalties" name="collection[royalty]" class="validNumber sign__input" placeholder="Suggested: 3%, 5%, 10%"></input>
+            <span class="percentage_icon">%</span>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="percentage card-effect">
+      <div class="sign__group">
+        <label class="sign__label" for="royalties"><%= t('collections.form.categories') %></label>
+        <select data-placeholder="Choose tags ..." name="collection[category]" id="collection-category" class="sign__select chosen-select" required>
+          <% Category.pluck(:name).each do |category| %>
+            <option value="<%= category %>"><%= category %></option>
+          <% end %>
+        </select>
+      </div>
+    </div>
+
+    <div class="percentage properties-card card-effect">
+      <h3 for="size"><%= t('collections.form.properties') %></h3>
+      <div class="collection-attribute-section">
+        <% if @response_attributes.present? && @response_attributes.length > 0 %>
+          <% @response_attributes&.map.with_index do |(key, value), index| %>
+            <div class="collection-attribute-entry collection-flex-box">
+              <div class="sign__group">
+                <label class="sign__label" for="size"></label>
+                <input id="size" type="text" name="collection[attributes][<%=index%>][key]" class="sign__input attr-key" placeholder="ex: Color" value="<%= key %>">
+              </div>
+              <div class="sign__group">
+                <label class="sign__label" for="propertie">&nbsp;</label>
+                <input id="propertie" type="text" name="collection[attributes][<%=index%>][value]" class="sign__input attr-val" placeholder="ex: Blue" value="<%= value %>">
+              </div>
+            </div>
+          <% end %>
+        <% else %>
+          <div class="collection-attribute-entry collection-flex-box">
+
+            <div class="sign__group">
+              <label class="sign__label" for="size"></label>
+              <input id="size" type="text" name="collection[attributes][0][key]" class="sign__input attr-key" placeholder="ex: Color">
+            </div>
+            <div class="sign__group">
+              <label class="sign__label" for="propertie">&nbsp;</label>
+              <input id="propertie" type="text" name="collection[attributes][0][value]" class="sign__input attr-val" placeholder="ex: Blue">
+            </div>
+
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="unlock-card instant-sale card-effect animatable">
+    <div class="sign__group sign__group--row">
+      <ul class="switch_group">
+        <li class="hide">
+          <label for="put_sale"><%= t('shared.put_on_sale') %></label>
+          <p><%= t('shared.put_on_sale_msg') %></p>
+          <label class="switch_type" id="put_sale">
+            <input type="checkbox" name="collection[put_on_sale]">
+            <input type="checkbox" name="collection[put_on_sale]" id="collection_put_on_sale" value='true' hide>
+            <span class="slider round"></span>
+          </label>
+        </li>
+        <li>
+          <label for="instant_sale"><%= t('shared.instant_sale_price') %></label>
+          <p><%= t('shared.instant_sale_price_msg') %></p>
+          <label class="switch_type" id="instant_sale">
+            <input type="checkbox" id="collection_instant_sale_enabled" name="collection[instant_sale_enabled]">
+            <span class="slider round"></span>
+          </label>
+        </li>
+        <li id="instPrice" class="li_inp_grp hide">
+          <div class="inp-grp-flex">
+            <div class="sign__group">
+              <input type="text" name="collection[instant_sale_price]" class="sign__input" id="collection_instant_sale_price" placeholder="Enter price for one piece" novalidate/>
+            </div>
+            <div class="sign__group">
+              <%= select_tag "collection[erc20_token_id]", options_for_select(Erc20Token.select_options(current_user)) ,class: "sign__select chosen-select", required: true %>
+            </div>
+          </div>
+        </li>
+        <li>
+          <label for="allow_bid"><%= t('shared.allow_bid') %></label>
+          <p><%= t('shared.allow_bid_msg') %></p>
+          <label class="switch_type" id="allow_bid">
+            <input type="checkbox" name="collection[allow_bid]" id="collection-allow-bid">
+            <span class="slider round"></span>
+          </label>
+        </li>
+        <li id="timedAuction" class="li_inp_grp ">
+          <label for="timed_auction"><%= t('shared.timed_auction')%></label>
+          <p><%= t('shared.timed_auction_msg')%></p>
+          <label class="switch_type" id="timed_auction">
+            <input type="checkbox" id="collection_timed_auction_enabled" name="collection[x]">
+            <span class="slider round"></span>
+          </label>
+        </li>
+        <li id="auctionBid" class="li_inp_grp hide">
+          <div class="inp-grp-flex">
+            <div class="sign__group">
+              <input type="number" id="collection_minimum_bid" name="collection[minimum_bid]" class="sign__input" placeholder="Enter minimum bid" step="any">
+            </div>
+            <div class="sign__group">
+              <%= select_tag "collection[min_bid_erc20_token_id]", options_for_select(Erc20Token.select_options(current_user)), class: "sign__select chosen-select" %>
+            </div>
+          </div>
+          <p><%= t('shared.minimum_bid_msg')%></p>
+        </li>
+        <li id="auctionTimings" class="li_inp_grp hide">
+          <div class="inp-grp-flex">
+            <div class="sign__group">
+              <label class="sign__label" for="start_time"><%= t('shared.start_time') %></label>
+              <input type="text" id="collection_start_time" name="collection[start_time]" class="sign__input"  onkeydown="if(event.key==='.'){event.preventDefault()}">
+            </div>
+            <div class="sign__group">
+              <label class="sign__label" for="end_time"><%= t('shared.end_time') %></label>
+              <input type="text" id="collection_end_time" name="collection[end_time]" class="sign__input" onkeydown="if(event.key==='.'){event.preventDefault()}">
+            </div>
+            <%= hidden_field_tag 'timezone_offset' %>
+          </div>
+        </li>
+        <li>
+          <label for="unlock_purchase"><%= t('shared.unlock_one_purchased') %></label>
+          <p><%= t('shared.unlock_one_purchased_msg') %></p>
+          <label class="switch_type" id="unlock_purchase">
+            <input type="checkbox" name="collection[unlock_on_purchase]" id="collection-unlock-on-purchase">
+            <span class="slider round"></span>
+          </label>
+        </li>
+        <li class="li_inp_grp unlock-description-section hide">
+          <div class="sign__group">
+            <input type="text" id="collection-unlock-description" name="collection[unlock_description]" class="sign__input" placeholder="Enter unlock description">
+          </div>
+        </li>
+
+        <li>
+          <label for="referral fee"><%= t('collections.form.referral_fee') %></label>
+          <p>Percentage to give for a user referring your item</p>
+          <label class="switch_type" id="unlock_purchase">
+            <input type="checkbox" name="collection[unlock_on_purchase]" id="collection-unlock-referral-fee">
+            <span class="slider round"></span>
+          </label>
+        </li>
+        <li class="li_inp_grp referral-fee hide">
+          <div class='percentage-old-section'>
+            <input type='number' id="referral_percentage" name="collection[referral_percentage]" class="sign__input ref__input" onkeydown="if(event.key==='.'){event.preventDefault();}" placeholder="e. g. 2"></input>
+          <span>%</span>
+        </div>
+      </li>
+
+    </ul>
+  </div>
+</div>
+
+<div class="choose-card card-effect animatable" id="collection-type">
+
+  <div class="col-12">
+    <h4 class="sign__title"><%= t('collections.form.choose_collection') %></h4>
+    <div class="sign__group sign__group--row">
+      <ul class="sign__radio">
+        <li>
+          <!--<input id="type4" type="radio" name="type" checked="">-->
+          <%= radio_button_tag 'chooseCollection', "create", nil, class: "chooseCollectionErc chooseCollectionType", :id => "type4" %>
+          <label for="type4"><%= collection_type @collection_type %></label>
+        </li>
+        <li>
+          <!--<input id="type5" type="radio" name="type">-->
+          <%= radio_button_tag 'chooseCollection', "nft", nil, class: "chooseCollectionNft chooseCollectionType", :id => "type5", :checked => true %>
+          <label for="type5"><%= t('collections.form.nft') %></label>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="col-12 Own_contract_partials hide">
+    <% current_user.get_contracts(@collection_type).each do |contract|%>
+      <%=render partial: 'own_contract',  locals: {contract: contract, blank:false} %>
+    <%end%>
+    <%=render partial: 'own_contract',  locals: {blank:true, contract: nil} %>
+  </div>
+
+</div>
+
+<div class="minting-card card-effect animatable fadeInUp" id="minting-type">
+  <h3>Choose Minting Type</h3>
+  <div class="sign__group sign__group--row">
+    <ul class="sign__radio">
+      <li id="instant_minting">
+        <input type="radio" name="chooseMintType" id="chooseMintType_mint" value="mint" class="chooseCollectionErc" checked="checked">
+        <label for="chooseMintType_mint">Seller Mints</label>
+      </li>
+      <% unless @collection_type == "multiple" %>
+        <li id="lazy_minting" style="">
+          <input type="radio" name="chooseMintType" id="chooseMintType_lazy" value="lazy" class="chooseCollectionNft">
+          <label for="chooseMintType_lazy">Buyer Mints</label>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>
+
+<%# <div class="advance-sett">
+              <a href="">Show advance settings</a>
+            </div> %>
+
+<div class="saved-now">
+  <%# div class="saved-text">
+                <h5>Saved just now <span><i class="fas fa-exclamation-circle"></i></span></h5>
+              </div %>
+
+  <%# <div class="saved-text">
+                <a href="" class="btn-effect">Create Contract</a>
+              </div> %>
+
+  <div class="col-12 flex text-center">
+    <!--<button type="submit" class="sign__btn">Create Contract</button>-->
+    <%= submit_tag 'Create', class: 'btn-effect hide', id: 'submitCollection', 'data-disable-with': "<i class='fa fa-spinner fa-spin'></i> Creating...".html_safe %>
+    <a class=" btn-effect sign__btn create-item collection-submit-btn triggerCollectionValidation" href="#" role="button"><%= t('collections.form.list_item') %></a>
+
+    <!--<button type="button" class="sign__btn btn-primary" data-dismiss="modal">Cancel</button>-->
+  </div>
+</div>
+<% end %>
+</div>
+
+<%# Right Column %>
+<div class="collection-item col-preview">
+  <h4>Preview</h4>
+  <div class="preview sko-tabs-items">
+    <div class="explore-col">
+      <div class="sko-auction">
+
+        <div class="head-aution">
+          <div class="head-item">
+            <%= image_tag 'nft-diamond.svg', alt: 'ethereum' %>
+          </div>
+          <div class="head-item">
+            <ul>
+              <li><%= image_tag 'nft-heart.svg', class: 'heartbeat' %></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="aution-body-img">
+          <%= image_tag 'banner-bg.jpg', class: 'profile-pic', id: 'my-preview-section' %>
+        </div>
+
+        <div class="aution-body-content">
+
+          <div class="related-col">
+            <ul>
+              <li><%= image_tag 'default_user.png' %></li>
+              <li><%= image_tag 'default_user.png' %></li>
+              <li><%= image_tag 'default_user.png', class: 'tooltip-trigger' %></li>
+            </ul>
+          </div>
+
+          <div class="aution-price-det">
+            <div class="auction-price-item">
+              <h5>Price</h5>
+              <div class="preview-price-type">
+                <h4 class="price">0.00</h4>
+                <h5 id="1" class="size_chart">WETH</h5>
+                <h5 id="2" class="size_chart">SOKU</h5>
+              </div>
+            </div>
+            <div class="auction-price-item">
+              <a class="hvr-float" href="new_ui/profile_details">Buy now</a> <%#Need to disable this%>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+<%= hidden_field_tag 'collection_contract_address', nil %>
+<%= hidden_field_tag 'collection_contract_type', nil %>
+<%= hidden_field_tag 'collection_id', nil %>
+<%= hidden_field_tag 'collection_token_uri', nil %>
+<%= hidden_field_tag 'collection_supply', nil %>
+<%= hidden_field_tag 'collection_royalty_fee', nil %>
+
+<div class="collection-attribute-entry-base  collection-flex-box collection-attribute-entry hide">
+  <div class="sign__group">
+    <input id="size" type="text" class="sign__input attr-key" placeholder="e. g. Size">
+  </div>
+
+  <div class="sign__group">
+    <input id="propertie" type="text" class="sign__input attr-val" placeholder="e.g M.">
+  </div>
+</div>
+
+<div class="zoom-anim-dialog mfp-hide modal sm_modal card-effect" id="createOwnErc721">
+  <button class="modal__close md_cls" type="button"><i class="fas fa-times"></i></button>
+  <h4 class="modal-title share_link_page_h4"><%= t('collections.form.contract_detail') %></h4>
+  <div class="row">
+    <div class="col-12 col-md-12">
+      <div class="box sign__group">
+        <label class="sign__label" for="propertie">Profile Picture</label>
+        <%= file_field_tag "nft_contract[attachment]", accept: 'image/png,image/gif,image/jpeg', class: 'sign__file-upload create_file_upload sign__input inputfile inputfile-1', required: true %>
+        <div id="imagePreview-contract"></div>
+        <div class="close-preview-button" id="close-preview-button-contract"><span>X</span></div>
+      </div>
+    </div>
+    <div class="col-12 col-md-12">
+      <div class="box sign__group">
+        <label class="sign__label cover_label" for="propertie">Cover <span id='recommended-size'>(Recommended: 1260x375 pixels)</label>
+        <%= file_field_tag "nft_contract[cover]", accept: 'image/png,image/gif,image/jpeg', class: 'sign__file-upload create_file_upload sign__input inputfile inputfile-1', required: true %>
+        <div id="imageCover-contract"></div>
+        <div class="close-preview-button" id="close-cover-button-contract"><span>X</span></div>
+      </div>
+    </div>
+    <div class="col-12 col-md-12">
+      <div class="sign__group">
+        <%= hidden_field_tag 'nft_contract[owner_id]', current_user.address, class: 'nft-detail-name', disabled: true %>
+        <%= hidden_field_tag("nft_contract[address]") %>
+        <label class="sign__label" for="propertie"><%= t('collections.form.name') %></label>
+        <%= text_field_tag "nft_contract[name]", nil, class: 'sign__input', placeholder: 'Name of the Collection', required: true %>
+      </div>
+    </div>
+    <div class="col-12 col-md-12">
+      <div class="sign__group">
+        <label class="sign__label" for="propertie"><%= t('collections.form.symbol') %></label>
+        <%= text_field_tag "nft_contract[symbol]", nil, class: 'sign__input', placeholder: 'Symbol of the Collection', required: true %>
+      </div>
+    </div>
+    <div class="col-12 col-md-12">
+      <div class="sign__group">
+        <label class="sign__label" for="propertie">Collection Description</label>
+        <%= text_field_tag "nft_contract[desc]", nil, class: 'sign__input', placeholder: 'Description of the Collection', required: true %>
+      </div>
+    </div>
+    <div class="col-12 col-md-12">
+      <div class="sign__group">
+        <label class="sign__label" for="propertie">Referral Fee</label>
+        <div class='percentage-old-section'>
+          <input type="number" name="nft_contract[referral_percentage]" class="sign__input ref__input" onkeydown="if(event.key==='.'){event.preventDefault();}" placeholder="e. g. 2" />
+          <span>%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <div class="row contract-break">
+      <div class="col-8 col-md-6 cancel_btn_container">
+        <button type="button" class="btn-effect cancel_btn place-bid" data-dismiss="modal"><%= t('shared.cancel') %></button>
+      </div>
+      <div class="col-8 col-md-6">
+        <button type="submit" class="btn-effect createOwnErc721Form"><%= t('collections.form.create_contract') %></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="zoom-anim-dialog mfp-hide modal sm_modal card-effect" id="deployContract">
+  <button class="modal__close md_cls" type="button"><i class="fas fa-times"></i></button>
+  <h4 class="modal-title share_link_page_h4"><%= t('collections.form.follow_steps') %></h4>
+  <div class="modal-body pl-30 pr-30 last_bdr_remove">
+    <div class="row deployContract">
+      <%= render partial: 'deploy_contract' %>
+    </div>
+
+    <div class="row signMsg hide">
+      <%= render partial: 'sign_deploy_contract' %>
+    </div>
+  </div>
+</div>
+
+<div class="zoom-anim-dialog mfp-hide modal sm_modal card-effect" id="collectionStepModal">
+  <button class="modal__close md_cls collectionModalClose" type="button"><i class="fas fa-times"></i></button>
+  <h4 class="modal-title share_link_page_h4"><%= t('collections.form.follow_steps') %></h4>
+  <div class="modal-body pl-30 pr-30 last_bdr_remove">
+    <div class="row approveFlow">
+      <%= render partial: 'approve' %>
+    </div>
+
+    <div class="row mintFlow">
+      <%= render partial: 'mint' %>
+    </div>
+
+    <div class="row signFixedPrice hide">
+      <%= render partial: 'sign_fixed_price' %>
+    </div>
+
+    <div class="row signLockedContent hide">
+      <%= render partial: 'sign_locked_content' %>
+    </div>
+  </div>
+</div>
+
+<%= stylesheet_link_tag 'bootstrap-datetimepicker.min.css'%>
+<%= javascript_include_tag('moment.min.js') %>
+<%= javascript_include_tag('bootstrap-datetimepicker.min.js') %>
+<script src="https://momentjs.com/downloads/moment-timezone-with-data.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.7/jstz.min.js"></script>
+<script type="text/javascript">
+  var time_zone = jstz.determine();
+  var momnt = moment.tz(Date.new, time_zone.name());
+  $("#timezone_offset").val(momnt.tz(time_zone.name()).format('Z'))
+
+  $(function () {
+    $('#collection_start_time, #collection_end_time').datetimepicker({
+      format: 'DD/MM/YYYY HH:mm',
+    });
+    $(document).on("change", "#collection-allow-bid", function () {
+      if($(this).is(":checked")) {
+        $('#chooseMintType_mint').prop('checked', true)
+        $('#lazy_minting').hide()
+      } else {
+        $('#lazy_minting').show()
+      }
+    })
+  });
+</script>

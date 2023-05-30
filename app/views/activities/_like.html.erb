@@ -1,0 +1,27 @@
+<% if activity.event == "create" && activity.item.user.present? && activity.item.collection.present? %>
+  <div class="activity-item animatable fadeInLeft">
+    <div href="" class="card-effect activity-main-content">
+        <% cover_image = activity.item.collection.cover.present? ? activity.item.collection.cover : activity.item.collection.attachment %>
+        <p><%= time_ago_in_words(activity.created_at) %></p>
+          <div class="activity-content">
+
+            <div class="act-item act-img">
+              <%= link_to collection_path(activity.item.collection.address) do %>
+                  <%= image_tag url_for(cover_image) %>
+              <% end %>
+            </div>
+
+            <div class="act-item">
+              <%= link_to collection_path(activity.item.collection.address) do %>
+                  <%= activity.item.collection.title %>
+              <% end %>
+              <p>Liked by
+                <%= link_to user_path(activity.item.user.address) do %>
+                    @<%= activity.item.user.full_name %>
+                <% end %>
+              </p>
+            </div>
+          </div>
+    </div>
+  </div>
+<% end %>

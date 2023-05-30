@@ -1,0 +1,150 @@
+<%if false%>
+  <footer class="pt-50 pb-15">
+    <div class="container-fluid padding-lr-custom-50">
+      <div class="row ml-0 mr-0">
+        <div class="col-md-12">
+          <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="footer-logo">
+              <h4><%= image_tag Rails.application.credentials.config[:app_logo], class: 'img-responsive logo-img' %></h4>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="quick-link">
+              <h4>><%= t('footer.quick_links') %></h4>
+              <ul>
+                <li>
+                  <a><%= t('footer.about') %></a>
+                </li>
+                <li>
+                  <a href="<%= root_path %>"><%= t('footer.explore') %></a>
+                </li>
+                <li>
+                  <a><%= t('footer.HIW') %></a>
+                </li>
+                <li>
+                  <a><%= t('footer.support') %></a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="community">
+              <h4><%= t('footer.community') %></h4>
+              <ul>
+                <li>
+                  <a><%= t('footer.discussion') %></a>
+                </li>
+                <li>
+                  <a><%= t('footer.voting') %></a>
+                </li>
+                <li>
+                  <a><%= t('footer.suggest_feature') %></a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="social-media">
+              <h4><%= t('footer.social_media') %></h4>
+              <ul>
+                <li>
+                  <a href="javascript:void(0);">
+                    <i class="fa fa-facebook"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="javascript:void(0);">
+                    <i class="fa fa-instagram"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="javascript:void(0);">
+                    <i class="fa fa-twitter"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="javascript:void(0);">
+                    <i class="fa fa-youtube"></i>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row ml-0 mr-0">
+        <div class="col-md-12">
+          <hr>
+          <div class="col-md-6 col-sm-6 col-xs-12">
+            <p class="copyrights">© <%= Rails.application.credentials.config[:app_name] %>, Inc. All rights reserved.</p>
+          </div>
+          <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="li-copy">
+              <ul>
+                <li><a><%= t('footer.tc') %></a></li>
+                <li><a><%= t('footer.privacy_policy') %></a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+<%end%>
+
+<!-- end get started -->
+
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 order-1 order-md-1 order-lg-1 order-xl-1">
+        <%= image_tag 'footer-logo.png', class: "img-responsive logo-img" %>
+        <p class="footer__tagline">
+          <%= t('footer.tag_line', app_name: Rails.application.credentials.config[:app_name]) %>
+        </p>
+      </div>
+
+      <div class="col-6 col-md-3 col-lg-3 col-xl-3 order-2 order-md-2 order-lg-2 order-xl-2 offset-md-0 offset-lg-0">
+        <h6 class="footer__title"><%= Rails.application.credentials.config[:app_name] %> Marketplace</h6>
+        <div class="footer__nav">
+          <a href="/about">About <%= Rails.application.credentials.config[:app_name] %> </a>
+          <%# <a target="_blank" href="/terms_conditions">Terms and Conditions</a> %>
+          <!--   <a target="_blank" href="/privacy">Privacy</a> -->
+          <!--          <a href="/sitemap">Sitemap</a>-->
+        </div>
+      </div>
+
+      <div class="col-6 col-md-3 col-lg-3 col-xl-3 order-3 order-lg-3 order-md-3 order-xl-4">
+        <!--   <h6 class="footer__title">Community</h6> -->
+        <div class="footer__nav">
+          <!--  <a href="<%= Rails.application.credentials.config[:support_url] %>" target="_blank">Help Center</a> -->
+          <!--  <a href="<%= Rails.application.credentials.config[:discussion_url] %>" target="_blank">Discussion</a> -->
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <div class="footer__content">
+          <div class="footer__social">
+            <a href="https://twitter.com/soku_nft" target="_blank"><i class="fab fa-twitter"></i></a>
+            <%# <a href="https://t.co/rfTvIiWjlt" target="_blank"><i class="fa-brands fa-discord"></i></a> %>
+          </div>
+
+          <small class="footer__copyright footer-menu">
+            <p class="footer-copy-right"><%= Rails.application.credentials.config[:app_name] %>, Copyright  2023.</p>
+          </small>
+          <small class="footer__copyright footer-menu">
+            <ul>
+              <li><%= link_to "Terms and Conditions", 'https://app.termly.io/document/terms-of-use-for-online-marketplace/37df1fa5-2347-4145-9ae5-2795efdc698c
+',  target: :_blank %> </li>
+              <li><%= link_to "Privacy Policy", 'https://app.termly.io/document/privacy-policy/4aa8aba0-6914-4b0d-b5b1-7b21f5a39126',  target: :_blank %> </li>
+              <li><%= link_to "Cookie Policy", 'https://app.termly.io/document/cookie-policy/1fc85edb-d1ad-4319-836e-0a4008705a9e',  target: :_blank %> </li>
+            </ul>
+          </small>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

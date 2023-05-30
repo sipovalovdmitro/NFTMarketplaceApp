@@ -1,0 +1,12 @@
+<% title = "Check out this NFT, #{@collection.name}" %>
+
+<div class="sko-social social-share-btn">
+  <a class="hvr-float" href="https://twitter.com/share?url=<%= current_url %>&text=<%= title %>, <%= @collection.description %>" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fab fa-twitter"></i></a>
+  <a class="hvr-float" href="https://www.facebook.com/sharer/sharer.php?u=<%= current_url %>&caption=<%= title %>&description=<%= @collection.description %>" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fab fa-facebook"></i></a>
+  <a class="hvr-float" href="https://telegram.me/share/url?url=<%= current_url %>&text=<%= title %>, <%= @collection.description %>" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fas fa-paper-plane"></i></a>
+  <a class="hvr-float" href="mailto:?subject=<%= title %>&body=<%= @collection.description %> Link here:<%= current_url %>"><i class="fas fa-envelope"></i></a>
+  <p class="is-hidden" id="copyUrl"><%= current_url %></p>
+  <div class="copy-text">
+    <button class="btn-copied"><span class="hvr-float" onclick="copyToClipboard('#copyUrl')"><i class="fas fa-link"></i></span></button>
+  </div>
+</div>

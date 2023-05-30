@@ -1,0 +1,175 @@
+<% if collections.present? %>
+  <div class="top-collection-tbl">
+    <input type="hidden" value="<%= params[:sort_by] %>" id="topCollectionsSortBy" />
+    <input type="hidden" value="<%= params[:sort_to] %>" id="topCollectionsSortTo" />
+
+    <table>
+      <thead>
+        <tr>
+          <th>Collections</th>
+          <th>
+            <%= link_to rankings_path(sort_by: 'recent_volume', sort_to: display_sort_type('recent_volume', params[:sort_to])), remote: true do %>
+              <span class="sko-table-header">Volume</span>
+              <% if !params[:sort_by] || params[:sort_by] == 'recent_volume' %>
+                <i class="fa-solid fa-circle-chevron-<%= display_sort_icon('recent_volume', params[:sort_to]) %>"></i>
+              <% end %>
+            <% end %>
+          </th>
+          <th>
+            <%= link_to rankings_path(sort_by: 'owners', sort_to: display_sort_type('owners', params[:sort_to])), remote: true do %>
+              <span class="sko-table-header">Owners</span>
+              <% if params[:sort_by] == 'owners' %>
+                <i class="fa-solid fa-circle-chevron-<%= display_sort_icon('owners', params[:sort_to]) %>"></i>
+              <% end %>
+            <% end %>
+          </th>
+          <th>
+            <%= link_to rankings_path(sort_by: 'total_sales', sort_to: display_sort_type('total_sales', params[:sort_to])), remote: true do %>
+              <span class="sko-table-header">Total Sales</span>
+              <% if params[:sort_by] == 'total_sales' %>
+                <i class="fa-solid fa-circle-chevron-<%= display_sort_icon('total_sales', params[:sort_to]) %>"></i>
+              <% end %>
+            <% end %>
+          </th>
+          <th>
+            <%= link_to rankings_path(sort_by: 'average_price', sort_to: display_sort_type('average_price', params[:sort_to])), remote: true do %>
+              <span class="sko-table-header">Avg. Price</span>
+              <% if params[:sort_by] == 'average_price' %>
+                <i class="fa-solid fa-circle-chevron-<%= display_sort_icon('average_price', params[:sort_to]) %>"></i>
+              <% end %>
+            <% end %>
+          </th>
+          <th><%= link_to rankings_path(sort_by: 'referral_percentage', sort_to: display_sort_type('referral_percentage', params[:sort_to])), remote: true do %>
+              <span class="sko-table-header">Referral Fee</span>
+              <% if params[:sort_by] == 'referral_percentage' %>
+                <i class="fa-solid fa-circle-chevron-<%= display_sort_icon('referral_percentage', params[:sort_to]) %>"></i>
+              <% end %>
+            <% end %>
+          </th>
+        </tr>
+      </thead>
+      <% count = 0 %>
+      <tbody>
+        <% collections.each do |contract| %>
+          <% count = count + 1 %>
+          <% volume = number_with_precision(usd_to_eth(contract.calculate_volume(contract.address)), percision: 3) %>
+          <tr class="hvr-float">
+            <a href="<%= nft_contract_path(contract.address)%>">
+
+              <td>
+                <span><%= count %></span>
+                <a href="<%= nft_contract_path(contract.address)%>">
+                  <%= image_tag(contract.attachment) if contract.attachment.present? %>
+                </a>
+                <div class=" nft-top-new-label">
+                  <a href="<%= nft_contract_path(contract.address)%>">
+                    <h4 class='rankings-truncate'><%= contract.name %></h4>
+                  </a>
+                  <p class="sko-tbl-mobile">Volume: <%= number_with_delimiter(volume)%> ETH </p>
+
+                </div>
+              </td>
+
+              <td>
+                <%= number_with_delimiter(volume) %> ETH
+                <p class="sko-tbl-mobile"><%= contract.collections.count %></p>
+              </td>
+
+              <td class="changed-color">
+                <% owners = number_with_delimiter(contract.owners) %>
+                <% if owners && owners.to_f > 0 %>
+                  <%= number_with_delimiter(contract.owners) %>
+                <%else%>
+                  -
+                <%end%>
+              </td>
+
+              <td>
+                <% total_sales = number_with_delimiter(contract.total_sales) %>
+                <% if total_sales && total_sales.to_f > 0 %>
+                  <%= number_with_delimiter(contract.total_sales) %></td>
+                <%else%>
+                  -
+                <%end%>
+              </td>
+              <td>
+                <% avg_price = number_with_precision(total_collection_avgPrice(contract), percision: 3) %>
+                <%if avg_price && avg_price.to_f > 0 %>
+                  $<%= number_with_delimiter(avg_price)%>
+                <% else %>
+                  -
+                <%end%>
+              </td>
+
+              <td>
+                <% if contract.referral_percentage.present? %>
+                  <%= contract.referral_percentage %>%
+                <% else %>
+                  <%= link_to nft_contract_path(contract.address), class: "social-btn" do %>
+                    <i class="fas fa-external-link-alt"></i>
+                  <% end %>
+                <%end%>
+                <% if contract.referral_percentage.present? %>
+                  <%= link_to nft_contract_path(contract.address), class: "social-btn" do %>
+                    <i class="fas fa-external-link-alt"></i>
+                  <% end %>
+                <% end %>
+
+                <%# Modal Confirmation %>
+                <% referral_link = set_referral_token(contract) %>
+                <div class="modal-place modal-confirm col-new-popup">
+                  <div class="modal-overlay modal-toggle modal-close"></div>
+                  <div class="modal-wrapper modal-transition card-effect">
+
+                    <div class="modal-body modal-step">
+                      <div class="item-det-con card-effect">
+                        <%= image_tag(contract.attachment) if contract.attachment.present? %>
+                        <h3><%= contract.name %></h3>
+                      </div>
+
+                      <div class="status-tbl">
+                        <div class="status-item">
+                          <% if current_user.present? %>
+                            <% if contract.referrals.un_used.present? && is_active_user_link(contract.id , current_user.id) %>
+                              <b>
+                                Referral Fee: <%= contract&.referral_percentage %>%
+                              </b>
+                              <p>
+                                <%= referral_link %>
+                              </p>
+
+                              <div class="sko-social">
+                                <a href="https://twitter.com/share?url=<%= referral_link %>&text=Check out <%=  contract.name %> on SokuNFT!" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fab fa-twitter"></i></a>
+                                <a href="https://www.facebook.com/sharer/sharer.php?u=<%= referral_link %>&caption=Check out <%=  contract.name %> on SokuNFT!" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fab fa-facebook"></i></a>
+                                <a href="https://telegram.me/share/url?url=<%= referral_link %>&text=Check out <%=  contract.name %> on SokuNFT!" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fas fa-paper-plane"></i></a>
+                                <a href="mailto:?subject=<%=  contract.name %>&body=<%= contract.description %> Link here:<%= referral_link %>"><i class="fas fa-envelope"></i></a>
+                                <p class="is-hidden" id="copyUrl"><%= referral_link %></p>
+                                <div class="copy-text">
+                                  <button class="btn-copied"><span class="hvr-float" onclick="copyToClipboard('#copyUrl')"><i class="fas fa-link"></i></span></button>
+                                </div>
+                              </div>
+                            </div>
+                          <% else %>
+                            <p>
+                              <a href="<%= generate_referral_for_contract_path(nft_contract_id: contract.id, rankings: "yes")  %>">Generate referral link </a>
+                            </p>
+                          <% end %>
+                        </div>
+                      <%end%>
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+            </td>
+          </a>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<% else %>
+  <%= render partial: 'common/empty' %>
+<% end %>

@@ -1,0 +1,26 @@
+<% if activity.event == "create" %>
+  <div class="activity-item animatable fadeInLeft">
+    <div href="" class="card-effect activity-main-content">
+      <p><%= time_ago_in_words(activity.created_at) %></p>
+        <div class="activity-content">
+
+          <div class="act-item act-img">
+            <%= link_to user_path(activity.item.follower.address) do %>
+                <%= image_tag url_for(activity.item.follower.profile_image) %>
+            <% end %>
+          </div>
+
+          <div class="act-item">
+            <%= link_to activity.item.follower.full_name, user_path(activity.item.follower.address) %>
+            
+            <p>started following
+              <%= link_to user_path(activity.item.followee.address) do %>
+                  @<%= activity.item.followee.full_name %>
+              <% end %>
+            </p>
+          </div>
+        </div>
+    </div>
+  </div>
+<% end %>
+

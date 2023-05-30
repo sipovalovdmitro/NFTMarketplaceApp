@@ -1,0 +1,33 @@
+FROM ruby:2.6.0 AS gem-cache
+RUN echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.list
+RUN apt update && apt-get -y install git curl default-libmysqlclient-dev build-essential --no-install-recommends && apt -y upgrade
+
+RUN mkdir -p /usr/local/bundle
+COPY Gemfile Gemfile.lock ./
+RUN bundle install
+
+FROM ruby:2.6.0 AS base
+RUN echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.list
+RUN apt update && apt-get -y install git curl default-libmysqlclient-dev build-essential --no-install-recommends && apt -y upgrade
+
+ENV NODE_VERSION=12.0.0
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash
+ENV NVM_DIR=/root/.nvm
+RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
+RUN . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
+RUN . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
+ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
+RUN node --version
+RUN npm --version
+
+WORKDIR /app
+
+COPY --from=gem-cache /usr/local/bundle /usr/local/bundle
+
+COPY Gemfile Gemfile.lock ./
+
+RUN bundle install
+
+COPY . ./
+
+RUN npm install -g yarn

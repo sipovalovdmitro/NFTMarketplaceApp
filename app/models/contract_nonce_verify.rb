@@ -1,0 +1,2 @@
+class ContractNonceVerify < ApplicationRecord
+end

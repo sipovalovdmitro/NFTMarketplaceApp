@@ -1,0 +1,73 @@
+<div class="main-content">
+  <div class="page-content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <%= link_to 'Back', admin_categories_path, class: "btn btn-secondary w-md add_btn back-btn" %>
+          <div class="page-title-box d-flex align-items-center justify-content-between">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <div class="row mb-4 align-center">
+                <div class="col-sm-6">
+                  <h4 class="card-title"><%= t("admin.categories.index.title") %></h4>
+                </div>
+                <div class="col-sm-2"></div>
+                <div class="col-sm-4">
+                  <%= link_to t("admin.categories.index.new_category"), new_admin_category_path, class: "float-right btn btn-primary" %>
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                  <thead>
+                    <tr>
+                      <!-- <th><%#= t("admin.categories.index.id") %></th> -->
+                      <th><%= t("admin.categories.index.name") %></th>
+                      <th><%= t("admin.categories.index.is_active") %></th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% if @categories.present? %>
+                      <% @categories.each do |category| %>
+                        <tr>
+                          <!-- <td><%#= category.id %></td> -->
+                          <td><p class="max-300"><%= category.name %></p></td>
+                          <td><p class="max-300"><%= boolean_str(category.is_active) %></p></td>
+                          <td>
+                            <%= link_to t("shared.show"), admin_category_path(category), class: "pr-2" %>
+                            <%= link_to t("shared.edit"), edit_admin_category_path(category), class: "pr-2" %>
+                            <% delete_text = category.is_active? ? t("shared.deactivate") : t("shared.activate")%>
+                            <%= link_to delete_text, admin_category_path(category), method: :delete, class: "pr-2" %>
+                          </td>
+                        </tr>
+                      <% end %>
+                    <% else %>
+                      <tr>
+                        <td colspan="4" class="text-center"><%= t(:no_records, scope: :admin) %></td>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+              </div>  
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="flickr_pagination sko-pagination">
+            <%= will_paginate @categories %>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

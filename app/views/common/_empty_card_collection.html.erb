@@ -1,0 +1,37 @@
+<div class="card dummy-explorer">
+  <div class="nft_card__header">
+    <div class="nc_header_left">
+      <span class="nc_hd_img">
+        <%= image_tag 'eth.svg' %>
+      </span>
+    </div>
+    <div class="nc_header_right">
+      <button class="card__likes heart"><i class="far fa-heart"></i><i class="fas fa-heart"></i><span>1</span></button>
+    </div>
+  </div>
+  <div class="t_c">
+    <a href="javascript:void(0);" class="card__cover">
+      <span class="collection-card-img" style="background-image: image-url('banner-bg.jpg')">
+        <%= image_tag 'banner-bg.jpg' %>
+      </span>
+    </a>
+  </div>
+  <div class="grid-box">
+    <h3 class="card__title" data-toggle="tooltip" data-placement="top" title="" data-original-title="Image New 003 / 1 of 1">
+      <a href="javascript:void(0);"><%= t('collections.collection_name')%></a>
+    </h3>
+    <div class="card__author">
+      <%= image_tag 'new-user.png' %>
+      <a href="javascript:void(0);">@0x00aeccc...daf0</a>
+    </div>
+  </div>
+  <div class="card__info">
+    <div class="card__price">
+      <span><%= t('shared.reserve_price')%></span>
+      <span>0.00001 ETH</span>
+    </div>
+    <div class="">
+      <a href="#" class="buy-now-btn">Buy Now</a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,55 @@
+<div class="user-wrapper">
+
+  <div class="swiper-variation">
+
+    <div class="sko-swiper-thumb">
+
+      <div class="swiper swiper-variant">
+
+        <div class="swiper-wrapper">
+          <% @featured_collections.each do |collection|%>
+            <a href="<%= collection_path(collection.address) %>" id='swiper-id' class="swiper-slide hvr-float">
+              <% if collection.attachment.content_type == 'video/mp4'%>
+                <video autoplay muted loop playsinline preload="metadata" style="object-fit: cover; border-radius: 20px; width: 100%">
+                  <source src="<%= url_for(collection.attachment) %>" type="video/mp4">
+                </video>
+              <% else %>
+                <%= image_tag cover_url(collection) %>
+              <%end%>
+              <div id='overlay' class="overlay-text">
+                <h3><%= collection.name %></h3>
+                <p> By <%= collection.creator.full_name %>
+                  <% if collection.creator.is_verified? %>
+                    <span> <%= image_tag 'approved-icon.svg' %> </span>
+                  <% end %>
+                </p>
+                <% if collection.instant_sale_price.present? %>
+                  <p class="overlay_text_price">Floor: <%= collection.instant_sale_price %> <%= collection.erc20_token&.symbol %></p>
+                <% elsif collection.min_bid.present? %>
+                  <p class="overlay_text_price">Floor:<%= collection.min_bid %></p>
+                <% else %>
+                  <p class="overlay_text_price">No Current Bids </p>
+                <% end %>
+              </div>
+            </a>
+          <% end %>
+
+        </div>
+
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+
+      </div>
+
+    </div>
+
+    <div class="sko-hero-title user-container">
+      <h1 class="animate__animated animate__fadeInLeft">Affiliate NFT Marketplace - Changing the Game.</h1>
+    </div>
+    <div class="home__btns animate__animated animate__fadeInUp new-btn-hero user-container">
+      <a href="<%= search_path%>" class="btn-effect hvr-float tag" data-turbolinks="false">Explore</a>
+      <a href="<%= new_collection_path %>" class="btn-effect hvr-float">Create</a>
+    </div>
+
+  </div>
+  <div>

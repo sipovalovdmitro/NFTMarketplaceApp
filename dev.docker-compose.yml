@@ -1,0 +1,88 @@
+version: "3"
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+
+    restart: always
+    image: app:latest
+    depends_on:
+      # - database
+      - redis
+      - elasticsearch
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+    # FOR PRODUCTION DATABASE - DO NOT TOUCH WHEN TESTING
+    environment:
+      RAILS_ENV: development
+      DB_USER: sokunft
+      DB_PASSWORD: labelkills00A#
+      # DB_HOST: test-db-snap.cln3nezl1yuz.us-east-1.rds.amazonaws.com
+      # DB_USER: sokunft
+      # DB_PASSWORD: labelkills00A#
+      DB_HOST: production-db.cln3nezl1yuz.us-east-1.rds.amazonaws.com
+      ELASTIC_HOST: elasticsearch
+      REDIS_HOST: redis://redis:6379/0
+    entrypoint: ./dev-entrypoint.sh
+
+  sidekiq:
+    image: app:latest
+    depends_on:
+      - redis
+      - elasticsearch
+      - app
+    ports:
+      - "3010:3000"
+    volumes:
+      - .:/app
+    # FOR PRODUCTION DATABASE - DO NOT TOUCH WHEN TESTING
+    environment:
+      RAILS_ENV: development
+      DB_USER: sokunft
+      DB_PASSWORD: labelkills00A#
+      # DB_HOST: test-db-snap.cln3nezl1yuz.us-east-1.rds.amazonaws.com
+      # DB_USER: sokunft
+      # DB_PASSWORD: labelkills00A#
+      DB_HOST: production-db.cln3nezl1yuz.us-east-1.rds.amazonaws.com
+      ELASTIC_HOST: elasticsearch
+      REDIS_HOST: redis://redis:6379/0
+    command: bundle exec sidekiq
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.0
+    ports:
+      - "9200:9200"
+    environment:
+      - "discovery.type=single-node"
+      - "cluster.name=elasticsearch-rails"
+      - "cluster.routing.allocation.disk.threshold_enabled=false"
+
+  # database:
+  #   image: mysql:5.7
+  #   restart: always
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: password
+  #     MYSQL_DATABASE: app
+  #     MYSQL_USER: user
+  #     MYSQL_PASSWORD: password
+  #   volumes:
+  #     - mysql_database:/var/lib/mysql
+  #   ports:
+  #     - 3306:3306
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+volumes:
+  mysql_database:

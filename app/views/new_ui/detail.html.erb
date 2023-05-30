@@ -1,0 +1,647 @@
+<div class="user-wrapper">
+  <div class="user-container">
+
+    <div class="user-bg-img">
+      <%= image_tag 'user-bg.png', class: "animate__animated animate__zoomIn"%>
+    </div>
+
+    <div class="user-img animate__animated animate__zoomIn">
+      <%= image_tag 'avatar-user.png', class: "user-detail-img"%>
+      <%= image_tag 'approved-icon.svg', class: "user-detail-approved"%>
+    </div>
+
+    <div class="user-detail">
+
+      <div class="details-section">
+        <div class="details-item">
+          <h2 class="animatable fadeInLeft">Otherdeed <small>@otherdeed</small></h2>
+
+          <div class="details-tags-btn animatable fadeInLeft">
+
+            <div class="details-tags-item">
+              <div class="tabs-col-usr">
+                <%= image_tag 'nft-diamond.svg' %>
+              </div>
+              <p class="tabs-col-usr">0xd341....e034</p>
+              <span class="tabs-col-usr "><i class="far fa-copy"></i></span>
+            </div>
+            <div class="details-tags-item">
+              <button>More <i class="fas fa-chevron-down"></i></button>
+            </div>
+
+          </div>
+
+          <div class="details-tags-btn user-globe animatable fadeInLeft">
+
+            <div class="details-tags-item">
+              <div class="tabs-col-usr">
+                <%= image_tag 'globe.svg' %>
+              </div>
+              <a href="" class="tabs-col-usr">otherside.xyz</a>
+            </div>
+            <div class="details-tags-item user-twitter">
+              <a href=""><i class="fa-brands fa-twitter"></i></a>
+            </div>
+
+          </div>
+
+          <div class="user-wrap-para animatable fadeInUp">
+            <p>Azuki starts with a collection of 10,000 avatars that give you membership access to
+              The Garden a corner of the internet where artists, builders, and web3 enthusiasts meet to create a</p>
+          </div>
+        </div>
+
+        <div class="details-item">
+
+          <table class="prices-table anifaderight animation-element animatable fadeInRight">
+            <tr>
+              <td>
+                <p>Highest sale</p>
+                <h4>$1.4m</h4>
+              </td>
+              <td>
+                <p>Highest sale</p>
+                <h4>$1.4m</h4>
+              </td>
+              <td>
+                <p>Highest sale</p>
+                <h4>$1.4m</h4>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p>Highest sale</p>
+                <h4>$1.4m</h4>
+              </td>
+              <td>
+                <p>Highest sale</p>
+                <h4>$1.4m</h4>
+              </td>
+              <td>
+                <p>Highest sale</p>
+                <h4>$1.4m</h4>
+              </td>
+            </tr>
+          </table>
+
+          <div class="bidding anifadeup animation-element">
+            <div class="bidding-item animatable fadeInRight">
+              <form action="" method="">
+                <input class="bid-inner" type="text" id="" value="" placeholder="Place a bid for any item from this collection">
+                <input class="bid-inner btn-style" type="submit" value="Place a bid">
+              </form>
+              <%# <p class="bid-inner">Place a bid for any item from this collection</p>
+                            <a href="" class="bid-inner">Place a bid</a> %>
+            </div>
+            <div class="bidding-item animatable fadeInRight">
+              <a href="">
+                <%= image_tag 'external.svg' %>
+              </a>
+            </div>
+            <div class="bidding-item animatable fadeInRight">
+              <a href="profile_details">
+                <i class="fas fa-ellipsis-h"></i>
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <%# tabs Sections %>
+      <div class="user-tabs">
+        <ul class="">
+          <li data-tb="items" class="active animatable fadeInLeft"><a href="javascript:void(0)">Items</a></li>
+          <li data-tb="activity" class="animatable fadeInLeft" ><a href="javascript:void(0)">Activity</a></li>
+          <li data-tb="stats" class="animatable fadeInLeft" ><a href="javascript:void(0)">Stats</a></li>
+        </ul>
+      </div>
+
+      <div class="category-sections">
+
+        <div class="cat-sec-item">
+          <ul class="skop-explore animatable fadeInLeft">
+            <li class="active hvr-bounce-in" data-explore-profile="category"><a href="javascript:void(0)">Category</a></li>
+            <li data-explore-profile="all"><a href="javascript:void(0)">
+                <fieldset class="hvr-bounce-in">
+                  <legend>Properties</legend>
+                  <h3>All <span>1328</span></h3>
+                </fieldset>
+              </a></li>
+            <li class="hvr-bounce-in" data-explore-profile="sale-type"><a href="javascript:void(0)">Sale type</a></li>
+            <li class="hvr-bounce-in" data-explore-profile="price-range"><a href="javascript:void(0)">Price Range</a></li>
+            <li class="hvr-bounce-in" data-explore-profile="all"><a href="javascript:void(0)">Reset</a></li>
+          </ul>
+        </div>
+
+        <div class="cat-sec-item">
+          <fieldset class="hvr-bob animatable fadeInRight">
+            <legend>Sort by</legend>
+            <h3><a href="" class="sko-view-all">Recently added</a></h3>
+          </fieldset>
+        </div>
+
+      </div>
+
+      <div class="sko-tabs-items tab-explore tab-explore-pro ">
+
+        <%# Auction card %>
+        <div class="explore-profile animatable fadeInLeft" data-tb="items">
+          <div class="sko-auction hvr-float">
+
+            <div class="head-aution">
+              <div class="head-item">
+                <%= image_tag 'nft-diamond.svg' %>
+              </div>
+              <div class="head-item">
+                <ul>
+                  <li><%= image_tag 'nft-heart.svg', class: "heartbeat"%></li>
+                  <li>
+                    <h4>135</h4>
+                  </li>
+                </div>
+              </div>
+
+              <a href="profile_details" class="aution-body-img">
+                <%= image_tag 'gaming1.png' %>
+              </a>
+
+              <div class="aution-body-content">
+                <%# title %>
+                <div class="aution-title">
+                  <h2 class="auc-title-item">BoredApe YactClub #8956</h2>
+                  <span class="auc-title-item"><i class="fas fa-ellipsis-h"></i></span>
+                </div>
+
+                <%# auction related collection %>
+                <div class="related-col">
+                  <ul>
+                    <li> <%= image_tag 'avatar-img1.png' %></li>
+                    <li> <%= image_tag 'avatar-img2.png' %></li>
+                    <li>
+                      <div class="sko-tooltip">
+                        <p>Creator: <a href="new_ui/detail">@Otherdeed</a></p>
+                        <span></span>
+                      </div>
+                      <%= image_tag 'avatar-img3.png', class: "tooltip-trigger"%>
+                    </li>
+                  </ul>
+                </div>
+
+                <%# auction price %>
+                <div class="aution-price-det">
+                  <div class="auction-price-item">
+                    <h5>Highest bid 1/1</h5>
+                    <h4>Bid 4.5 ETH</h4>
+                  </div>
+                  <div class="auction-price-item">
+                    <a class="hvr-float" href="new_ui/profile_details">Place a bid</a>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+          <%# End of Auction card %>
+
+          <%# Auction card %>
+          <div class="explore-profile animatable fadeInLeft" data-tb="activity" data-explore-profile="sale-type">
+            <div class="sko-auction hvr-float">
+
+              <div class="head-aution">
+                <div class="head-item">
+                  <%= image_tag 'nft-diamond.svg', class: "heartbeat"%>
+                </div>
+                <div class="head-item">
+                  <ul>
+                    <li> <%= image_tag 'nft-heart.svg' %> </li>
+                    <li>
+                      <h4>135</h4>
+                    </li>
+                  </div>
+                </div>
+
+                <a href="" class="aution-body-img">
+                  <%= image_tag 'gaming1.png' %>
+                </a>
+
+                <div class="aution-body-content">
+                  <%# title %>
+                  <div class="aution-title">
+                    <h2 class="auc-title-item">BoredApe YactClub #8956</h2>
+                    <span class="auc-title-item"><i class="fas fa-ellipsis-h"></i></span>
+                  </div>
+
+                  <%# auction related collection %>
+                  <div class="related-col">
+                    <ul>
+                      <li><%= image_tag 'avatar-img1.png' %></li>
+                      <li><%= image_tag 'avatar-img2.png' %></li>
+                      <li><%= image_tag 'avatar-img3.png' %></li>
+                    </ul>
+                  </div>
+
+                  <%# auction price %>
+                  <div class="aution-price-det">
+                    <div class="auction-price-item">
+                      <h5>Highest bid 1/1</h5>
+                      <h4>Bid 4.5 ETH</h4>
+                    </div>
+                    <div class="auction-price-item">
+                      <a class="hvr-float" href="">Place a bid</a>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+
+            <%# End of Auction card %>
+
+            <%# Auction card %>
+            <div class="explore-profile animatable fadeInLeft" data-tb="stats" data-explore-profile="category">
+              <div class="sko-auction hvr-float">
+
+                <div class="head-aution">
+                  <div class="head-item">
+                    <%= image_tag 'nft-diamond.svg' %>
+                  </div>
+                  <div class="head-item">
+                    <ul>
+                      <li><%= image_tag 'nft-heart.svg', class: "heartbeat"%></li>
+                      <li>
+                        <h4>135</h4>
+                      </li>
+                    </div>
+                  </div>
+
+                  <a href="" class="aution-body-img">
+                    <%= image_tag 'gaming1.png' %>
+                  </a>
+
+                  <div class="aution-body-content">
+                    <%# title %>
+                    <div class="aution-title">
+                      <h2 class="auc-title-item">BoredApe YactClub #8956</h2>
+                      <span class="auc-title-item"><i class="fas fa-ellipsis-h"></i></span>
+                    </div>
+
+                    <%# auction related collection %>
+                    <div class="related-col">
+                      <ul>
+                        <li><%= image_tag 'avatar-img1.png' %></li>
+                        <li><%= image_tag 'avatar-img2.png' %></li>
+                        <li><%= image_tag 'avatar-img3.png' %></li>
+                      </ul>
+                    </div>
+
+                    <%# auction price %>
+                    <div class="aution-price-det">
+                      <div class="auction-price-item">
+                        <h5>Highest bid 1/1</h5>
+                        <h4>Bid 4.5 ETH</h4>
+                      </div>
+                      <div class="auction-price-item">
+                        <a class="hvr-float" href="">Place a bid</a>
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+              <%# End of Auction card %>
+
+              <%# Auction card %>
+              <div class="explore-profile animatable fadeInLeft" data-tb="activity" data-explore-profile="price-range">
+                <div class="sko-auction hvr-float">
+
+                  <div class="head-aution">
+                    <div class="head-item">
+                      <%= image_tag 'nft-diamond.svg' %>
+                    </div>
+                    <div class="head-item">
+                      <ul>
+                        <li><%= image_tag 'nft-heart.svg', class: "heartbeat"%></li>
+                        <li>
+                          <h4>135</h4>
+                        </li>
+                      </div>
+                    </div>
+
+                    <a href="" class="aution-body-img">
+                      <%= image_tag 'gaming1.png' %>
+                    </a>
+
+                    <div class="aution-body-content">
+                      <%# title %>
+                      <div class="aution-title">
+                        <h2 class="auc-title-item">BoredApe YactClub #8956</h2>
+                        <span class="auc-title-item"><i class="fas fa-ellipsis-h"></i></span>
+                      </div>
+
+                      <%# auction related collection %>
+                      <div class="related-col">
+                        <ul>
+                          <li><%= image_tag 'avatar-img1.png' %></li>
+                          <li><%= image_tag 'avatar-img2.png' %></li>
+                          <li><%= image_tag 'avatar-img3.png' %></li>
+                        </ul>
+                      </div>
+
+                      <%# auction price %>
+                      <div class="aution-price-det">
+                        <div class="auction-price-item">
+                          <h5>Highest bid 1/1</h5>
+                          <h4>Bid 4.5 ETH</h4>
+                        </div>
+                        <div class="auction-price-item">
+                          <a class="hvr-float" href="">Place a bid</a>
+                        </div>
+                      </div>
+
+                    </div>
+
+                  </div>
+                </div>
+                <%# End of Auction card %>
+
+                <%# Auction card %>
+                <div class="explore-profile animatable fadeInLeft" data-explore-profile="category">
+                  <div class="sko-auction hvr-float">
+
+                    <div class="head-aution">
+                      <div class="head-item">
+                        <%= image_tag 'nft-diamond.svg' %>
+                      </div>
+                      <div class="head-item">
+                        <ul>
+                          <li><%= image_tag 'nft-heart.svg', class: "heartbeat"%></li>
+                          <li>
+                            <h4>135</h4>
+                          </li>
+                        </div>
+                      </div>
+
+                      <a href="" class="aution-body-img">
+                        <%= image_tag 'gaming1.png' %>
+                      </a>
+
+                      <div class="aution-body-content">
+                        <%# title %>
+                        <div class="aution-title">
+                          <h2 class="auc-title-item">BoredApe YactClub #8956</h2>
+                          <span class="auc-title-item"><i class="fas fa-ellipsis-h"></i></span>
+                        </div>
+
+                        <%# auction related collection %>
+                        <div class="related-col">
+                          <ul>
+                            <li><%= image_tag 'avatar-img1.png' %></li>
+                            <li><%= image_tag 'avatar-img2.png' %></li>
+                            <li><%= image_tag 'avatar-img3.png' %></li>
+                          </ul>
+                        </div>
+
+                        <%# auction price %>
+                        <div class="aution-price-det">
+                          <div class="auction-price-item">
+                            <h5>Highest bid 1/1</h5>
+                            <h4>Bid 4.5 ETH</h4>
+                          </div>
+                          <div class="auction-price-item">
+                            <a class="hvr-float" href="">Place a bid</a>
+                          </div>
+                        </div>
+
+                      </div>
+
+                    </div>
+                  </div>
+                  <%# End of Auction card %>
+
+                  <%# Auction card %>
+                  <div class="explore-profile animatable fadeInLeft" data-tb="stats">
+                    <div class="sko-auction hvr-float">
+
+                      <div class="head-aution">
+                        <div class="head-item">
+                          <%= image_tag 'nft-diamond.svg' %>
+                        </div>
+                        <div class="head-item">
+                          <ul>
+                            <li><%= image_tag 'nft-heart.svg', class: "heartbeat"%></li>
+                            <li>
+                              <h4>135</h4>
+                            </li>
+                          </div>
+                        </div>
+
+                        <a href="" class="aution-body-img">
+                          <%= image_tag 'gaming1.png' %>
+                        </a>
+
+                        <div class="aution-body-content">
+                          <%# title %>
+                          <div class="aution-title">
+                            <h2 class="auc-title-item">BoredApe YactClub #8956</h2>
+                            <span class="auc-title-item"><i class="fas fa-ellipsis-h"></i></span>
+                          </div>
+
+                          <%# auction related collection %>
+                          <div class="related-col">
+                            <ul>
+                              <li><%= image_tag 'avatar-img1.png' %></li>
+                              <li><%= image_tag 'avatar-img2.png' %></li>
+                              <li><%= image_tag 'avatar-img3.png' %></li>
+                            </ul>
+                          </div>
+
+                          <%# auction price %>
+                          <div class="aution-price-det">
+                            <div class="auction-price-item">
+                              <h5>Highest bid 1/1</h5>
+                              <h4>Bid 4.5 ETH</h4>
+                            </div>
+                            <div class="auction-price-item">
+                              <a class="hvr-float" href="">Place a bid</a>
+                            </div>
+                          </div>
+
+                        </div>
+
+                      </div>
+                    </div>
+                    <%# End of Auction card %>
+
+                    <%# Auction card %>
+                    <div class="explore-profile animatable fadeInLeft" data-tb="items" data-explore-profile="sale-type">
+                      <div class="sko-auction hvr-float">
+
+                        <div class="head-aution">
+                          <div class="head-item">
+                            <%= image_tag 'nft-diamond.svg' %>
+                          </div>
+                          <div class="head-item">
+                            <ul>
+                              <li><%= image_tag 'nft-heart.svg', class: "heartbeat"%></li>
+                              <li>
+                                <h4>135</h4>
+                              </li>
+                            </div>
+                          </div>
+
+                          <a href="" class="aution-body-img">
+                            <%= image_tag 'gaming1.png' %>
+                          </a>
+
+                          <div class="aution-body-content">
+                            <%# title %>
+                            <div class="aution-title">
+                              <h2 class="auc-title-item">BoredApe YactClub #8956</h2>
+                              <span class="auc-title-item"><i class="fas fa-ellipsis-h"></i></span>
+                            </div>
+
+                            <%# auction related collection %>
+                            <div class="related-col">
+                              <ul>
+                                <li><%= image_tag 'avatar-img1.png' %></li>
+                                <li><%= image_tag 'avatar-img2.png' %></li>
+                                <li><%= image_tag 'avatar-img3.png' %></li>
+                              </ul>
+                            </div>
+
+                            <%# auction price %>
+                            <div class="aution-price-det">
+                              <div class="auction-price-item">
+                                <h5>Highest bid 1/1</h5>
+                                <h4>Bid 4.5 ETH</h4>
+                              </div>
+                              <div class="auction-price-item">
+                                <a class="hvr-float" href="">Place a bid</a>
+                              </div>
+                            </div>
+
+                          </div>
+
+                        </div>
+                      </div>
+                      <%# End of Auction card %>
+
+                      <%# Auction card %>
+                      <div class="explore-profile animatable fadeInLeft" data-explore-profile="category">
+                        <div class="sko-auction hvr-float">
+
+                          <div class="head-aution">
+                            <div class="head-item">
+                              <%= image_tag 'nft-diamond.svg' %>
+                            </div>
+                            <div class="head-item">
+                              <ul>
+                                <li><%= image_tag 'nft-heart.svg', class: "heartbeat"%></li>
+                                <li>
+                                  <h4>135</h4>
+                                </li>
+                              </div>
+                            </div>
+
+                            <a href="" class="aution-body-img">
+                              <%= image_tag 'gaming1.png' %>
+                            </a>
+
+                            <div class="aution-body-content">
+                              <%# title %>
+                              <div class="aution-title">
+                                <h2 class="auc-title-item">BoredApe YactClub #8956</h2>
+                                <span class="auc-title-item"><i class="fas fa-ellipsis-h"></i></span>
+                              </div>
+
+                              <%# auction related collection %>
+                              <div class="related-col">
+                                <ul>
+                                  <li><%= image_tag 'avatar-img1.png' %></li>
+                                  <li><%= image_tag 'avatar-img2.png' %></li>
+                                  <li><%= image_tag 'avatar-img3.png' %></li>
+                                </ul>
+                              </div>
+
+                              <%# auction price %>
+                              <div class="aution-price-det">
+                                <div class="auction-price-item">
+                                  <h5>Highest bid 1/1</h5>
+                                  <h4>Bid 4.5 ETH</h4>
+                                </div>
+                                <div class="auction-price-item">
+                                  <a class="hvr-float" href="">Place a bid</a>
+                                </div>
+                              </div>
+
+                            </div>
+
+                          </div>
+                        </div>
+                        <%# End of Auction card %>
+
+                        <%# Auction card %>
+                        <div class="explore-profile animatable fadeInLeft" data-tb="activity" data-explore-profile="price-range">
+                          <div class="sko-auction hvr-float">
+
+                            <div class="head-aution">
+                              <div class="head-item">
+                                <%= image_tag 'nft-diamond.svg' %>
+                              </div>
+                              <div class="head-item">
+                                <ul>
+                                  <li><%= image_tag 'nft-heart.svg', class: "heartbeat"%></li>
+                                  <li>
+                                    <h4>135</h4>
+                                  </li>
+                                </div>
+                              </div>
+
+                              <a href="" class="aution-body-img">
+                                <%= image_tag 'gaming1.png' %>
+                              </a>
+
+                              <div class="aution-body-content">
+                                <%# title %>
+                                <div class="aution-title">
+                                  <h2 class="auc-title-item">BoredApe YactClub #8956</h2>
+                                  <span class="auc-title-item"><i class="fas fa-ellipsis-h"></i></span>
+                                </div>
+
+                                <%# auction related collection %>
+                                <div class="related-col">
+                                  <ul>
+                                    <li><%= image_tag 'avatar-img1.png' %></li>
+                                    <li><%= image_tag 'avatar-img2.png' %></li>
+                                    <li><%= image_tag 'avatar-img3.png' %></li>
+                                  </ul>
+                                </div>
+
+                                <%# auction price %>
+                                <div class="aution-price-det">
+                                  <div class="auction-price-item">
+                                    <h5>Highest bid 1/1</h5>
+                                    <h4>Bid 4.5 ETH</h4>
+                                  </div>
+                                  <div class="auction-price-item">
+                                    <a class="hvr-float" href="">Place a bid</a>
+                                  </div>
+                                </div>
+
+                              </div>
+
+                            </div>
+                          </div>
+                          <%# End of Auction card %>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+                  </div>

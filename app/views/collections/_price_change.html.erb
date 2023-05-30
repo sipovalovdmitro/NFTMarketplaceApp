@@ -1,0 +1,256 @@
+<div id="change-price" class="zoom-anim-dialog mfp-hide modal sm_modal card-effect">
+  <button class="modal__close md_cls" type="button"><i class="fas fa-times"></i></button>
+  <h4 class="modal-title share_link_page_h4"><%= t('collections.show.change_price') %></h4>
+  <%= form_tag(change_price_collection_path, method: :post, remote: true, class: 'change-price-form') do %>
+    <%= hidden_field_tag 'id', @collection.address, class: 'nft-detail-name' %>
+    <%= hidden_field_tag 'collection_timed_auction_running', @collection.auction_running? %>
+    <% if @collection.auction_running? &&  @collection.collection_type == "single"%>
+      <% min_bid_token = Erc20Token.find(@collection.min_bid_erc20_token_id) %>
+      <%= hidden_field_tag "collection_erc20_token_id", @collection.erc20_token_id, data: { 'address': min_bid_token.address, 'decimals': min_bid_token.decimals} %>
+    <% end %>
+
+    <div class="modal-body pl-30 pr-30">
+      <div class="row mb-15 hide">
+        <div class="col-md-8 col-sm-8 col-xs-8">
+          <label><%= t('shared.put_on_sale') %></label>
+          <p class="para-color"><%= t('shared.pos_msg') %></p>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-4">
+          <label class="switch">
+            <% if @collection.put_on_sale? %>
+              <input type="checkbox" name="collection[put_on_sale]" id="collection-put-on-sale" checked>
+            <% else %>
+              <input type="checkbox" name="collection[put_on_sale]" id="collection-put-on-sale">
+            <% end %>
+            <span class="slider round"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="row mb-15">
+        <div class="col-md-8 col-sm-8 col-xs-8">
+          <label><%= t('shared.instant_sale_price') %></label>
+          <p class="para-color"><%= t('shared.instant_sale_price_msg') %></p>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-4">
+          <label class="switch">
+            <input type="checkbox" id="collection_instant_sale_enabled" prevVal="<%= @collection.instant_sale_enabled %>" name="collection[instant_sale_enabled]" <%= @collection.instant_sale_enabled ? 'checked' : 'unchecked' %>>
+            <span class="slider round"></span>
+          </label>
+        </div>
+      </div>
+      <div id='instPrice' class="row mb-15 <%= 'hide' unless @collection.instant_sale_enabled? %>">
+        <div class="col-sm-12">
+          <div class="form-group-pop bidBuyInputs bordered change_price_box">
+              <% if @collection.auction_running? %>
+                <div class="chng-prc">
+                  <%= @collection.instant_sale_price %>
+                  <%= hidden_field_tag 'collection_instant_sale_price', @collection.instant_sale_price %>
+                </div>
+                <div class="chng-prc">
+                  <% erc20_token = Erc20Token.find (@collection.erc20_token_id) %>
+                  <center> <%= erc20_token.symbol.upcase %> </center>
+                </div>
+              <% else %>
+                <div class="chng-prc">
+                  <input type="text" name="collection[instant_sale_price]" prevVal="<%= @collection.instant_sale_price %>" value="<%= @collection.instant_sale_price %>" class="form-control input-custom sign__input" id="collection_instant_sale_price" placeholder="Enter price for one piece"/>
+                </div>
+                <div class="chng-prc">
+                  <%= select_tag "collection[erc20_token_id]", options_for_select(Erc20Token.select_options(current_user), 1), class: "form-control input-custom sign__input sign__select", required: true %>
+                </div>
+              <% end %>
+          </div>
+        </div>
+      </div>
+ 
+      <%if !@collection.is_lazy_minted?%>
+        <div class="row mb-15">
+          <div class="col-md-8 col-sm-8 col-xs-8">
+            <label><%= t('shared.allow_bid') %></label>
+            <p class="para-color"><%= t('shared.allow_bid_msg') %></p>
+          </div>
+          <div class="col-md-4 col-sm-4 col-xs-4">
+            <label class="switch">
+              <% if @collection.allow_bid? %>
+                <input type="checkbox" name="collection[allow_bid]" id="collection-allow-bid" checked>
+              <% else %>
+                <input type="checkbox" name="collection[allow_bid]" id="collection-allow-bid">
+              <% end %>
+              <span class="slider round"></span>
+            </label>
+          </div>
+        </div>
+
+        <% if @collection.allow_bid? && @collection.auction_running? %>
+          <div id='instPrice' class="row mb-15 ">
+            <div class="col-sm-12">
+              <div class="form-group bidBuyInputs bordered change_price_box">
+                <div class="chng-prc">
+                  <%= @collection.minimum_bid %>
+                </div>
+                <div class="chng-prc">
+                  <center> <%= @collection.erc20_token.symbol.upcase %> </center>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% else %>
+          <div id='instPrice' class="row mb-15 hide">
+            <div class="col-sm-12">
+              <div class="form-group bidBuyInputs bordered change_price_box">
+                <div class="chng-prc">
+                  <input type="text" name="collection[minimum_bid]" prevVal="<%= @collection.minimum_bid %>" value="<%= @collection.minimum_bid %>" class="form-control input-custom sign__input" id="collection_minimum_bid" placeholder="Enter price for one piece"/>
+                </div>
+                <div class="chng-prc">
+                  <%= select_tag "collection[min_bid_erc20_token_id]", options_for_select(Erc20Token.select_options(current_user), @collection.min_bid_erc20_token_id), class: "form-control input-custom sign__input sign__select", required: true, prevVal: @collection.min_bid_erc20_token_id %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <%end%>
+
+      <div class="row mb-15">
+        <div class="col-md-8 col-sm-8 col-xs-8">
+          <label>Timed Sale</label>
+          <p class="para-color">Set a period of time for which buyers can place bids</p>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-4">
+          <label class="switch">
+            <input type="checkbox" id="collection_timed_auction_enabled" name="collection[timed_auction_enabled]">
+            <span class="slider round"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="row mb-15 timed_auction_hide hide">
+        <div class="col-sm-12 mini-bid-change-price hide" >
+          <div class="form-group-pop bidBuyInputs bordered change_price_box">
+            
+            <div class="chng-prc">
+              <input type="text" name="collection[minimum_bid]" prevval="" value="" class="form-control input-custom sign__input" id="collection_minimum_bid" placeholder="Enter minimum bid" step="any">
+            </div>
+
+            <div class="chng-prc">
+              <div class="select_dev">
+                <%= select_tag "collection[min_bid_erc20_token_id]", options_for_select(Erc20Token.select_options(current_user)), class: "sign__select chosen-select" %>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-xs-6">
+          <label class="sign__label" for="start_time"><span class="translation_missing" title="translation missing: en.shared.start_time">Start Time</span></label>
+          <input type="text" id="collection_start_time" name="collection[start_time]" class="sign__input" onkeydown="if(event.key==='.'){event.preventDefault()}">
+        </div>
+        <div class="col-md-6 col-sm-6 col-xs-6">
+          <label class="sign__label" for="end_time"><span class="translation_missing" title="translation missing: en.shared.end_time">End Time</span></label>
+          <input type="text" id="collection_end_time" name="collection[end_time]" class="sign__input" onkeydown="if(event.key==='.'){event.preventDefault()}">
+        </div>
+        <%= hidden_field_tag 'timezone_offset' %>
+      </div>
+
+      <div class="row mb-15">
+        <div class="col-md-8 col-sm-8 col-xs-8">
+          <label><%= t('shared.unlock_one_purchased') %></label>
+          <p class="para-color"><%= t('shared.unlock_one_purchased_msg') %></p>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-4">
+          <label class="switch">
+            <% if @collection.unlock_on_purchase? %>
+              <input type="checkbox" name="collection[unlock_on_purchase]" id="collection-unlock-on-purchase">
+            <% else %>
+              <input type="checkbox" name="collection[unlock_on_purchase]" id="collection-unlock-on-purchase">
+            <% end %>
+            <span class="slider round"></span>
+          </label>
+        </div>
+      </div>
+      <div class="row mb-15 unlock-description-section hide">
+        <div class="col-md-8 col-sm-8 col-xs-8">
+          <label><%= t('collections.show.unlock_description') %></label>
+        </div>
+        <div class="col-md-12">
+          <div class="form-group-pop">
+            <input type="text" name="collection[unlock_description]" class="form-control input-custom sign__input" id="collection-unlock-description" placeholder="Enter unlock description" value="<%= @collection.unlock_description %>"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mb-15">
+        <div class='col-md-8 col-sm-8 col-xs-8'>
+          <label for="referral fee"><%= t('collections.form.referral_fee') %></label>
+          </div>
+          <div class="col-md-4 col-sm-4 col-xs-4">
+          <label class="switch_type" id="unlock_purchase">
+            <input type="checkbox" name="collection[referral_percentage]" id="collection-unlock-referral-fee">
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <div class="col-md-12 col-sm-8 col-xs-4 referral-fee hide">
+          <% if @collection.referral_percentage.present? %>
+            <div class="percentage-old-section">
+              <input id="referral_percentage" name="collection[referral_percentage]" prevVal="<%= @collection.referral_percentage %>" value="<%= @collection.referral_percentage %>" class="sign__input" placeholder="e. g. 2.5"></input>
+              <span>%</span>
+            </div>
+          <% else %>
+            <div class="percentage-old-section">
+              <input id="referral_percentage" name="collection[referral_percentage]" class="sign__input" placeholder="e. g. 2.5"></input>
+              <span>%</span>
+            </div>
+          <% end %>
+        </div>
+      </div>
+  
+    
+
+    </div>
+    <div class="modal-footer">
+      <%= submit_tag 'Update', class: 'hide', id: 'submitPriceChange', 'data-disable-with': "<i class='fa fa-spinner fa-spin'></i> Updating...".html_safe %>
+      <a class="btn bidding-element-btn triggerPriceChange theme-btn btn-effect" href="javascript:void(0)" role="button">Update</a>
+      <a class="bidding-element-btn close__modal secondary-btn btn-effect sale-type place-bid" data-dismiss="modal" role="button"><%= t('shared.cancel')%></a>
+    </div>
+  <% end %>
+</div>
+
+
+<div class="zoom-anim-dialog mfp-hide modal sm_modal" id="priceChange">
+  <button class="modal__close md_cls" type="button"><i class="fas fa-times"></i></button>
+  <h4 class="modal-title share_link_page_h4"><%= t('shared.follow_steps') %></h4>
+  <div class="modal-body">
+
+    <div class="approveFlow">
+      <%= render partial: 'approve' %>
+    </div>
+
+    <div class="signFixedPrice hide">
+      <%= render partial: 'sign_fixed_price' %>
+    </div>
+  </div>
+</div>
+
+
+<%= stylesheet_link_tag 'bootstrap-datetimepicker.min.css'%>
+<%= javascript_include_tag('moment.min.js') %>
+<%= javascript_include_tag('bootstrap-datetimepicker.min.js') %>
+<script src="https://momentjs.com/downloads/moment-timezone-with-data.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.7/jstz.min.js"></script>
+<script type="text/javascript">
+  var time_zone = jstz.determine();
+  var momnt = moment.tz(Date.new, time_zone.name());
+  $("#timezone_offset").val(momnt.tz(time_zone.name()).format('Z'))
+
+  $(function () {
+    $('#collection_start_time, #collection_end_time').datetimepicker({
+      format: 'DD/MM/YYYY HH:mm',
+    });
+    $(document).on("change", "#collection-allow-bid", function () {
+      if($(this).is(":checked")) {
+        $('#chooseMintType_mint').prop('checked', true)
+        $('#lazy_minting').hide()
+      } else {
+        $('#lazy_minting').show()
+      }
+    })
+  });
+</script>

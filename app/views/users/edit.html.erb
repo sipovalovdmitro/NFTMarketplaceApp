@@ -1,0 +1,128 @@
+<div class="user-wrapper">
+  <div class="user-container">
+
+    <% if current_user.banner.present? %>
+      <div class="user-bg-img">
+        <%= image_tag current_user.banner,  class: "animate__animated animate__zoomIn cover-img" %>
+      </div>
+    <% else %>
+      <div class="user-bg-img">
+        <div class="animate__animated animate__zoomIn default-background"></div>
+      </div>
+    <% end %>
+
+    <div class="user-img animate__animated animate__zoomIn">
+      <%= image_tag current_user.profile_image, class: "user-detail-img" %>
+    </div>
+
+    <div class="user-det-container animatable fadeInLeft">
+      <div class="user-det-item">
+        <h2>Profile Detail <span class="followers"><%= current_user.followers.count %> Followers</span>  </h2>
+        <a href="<%= image_tag 'edit-user.svg', class: "edit-profile" %>"></a>
+      </div>
+
+      <p class="user-det-item__full_name"><%= current_user.full_name %></p>
+
+        <% if current_user.twitter_link.present? || current_user.personal_url.present? %>
+          <div class="user-globe animatable fadeInLeft">
+            <% if current_user.personal_url.present? %>
+              <div class="details-tags-item">
+                <div class="tabs-col-usr">
+                  <a href="<%= image_tag 'globe.svg' %>"></a>
+                </div>
+              <a href="<%= current_user.personal_url %>" class="tabs-col-usr" target="_blank"><%= current_user.personal_url %></a>
+              </div>
+            <% end %>
+            <% if current_user.twitter_link.present? %>
+              <div class="details-tags-item personal_link">
+                <div class="tabs-col-usr ">
+                  <i class="fa-brands fa-twitter personal_link__icon"></i>
+                </div>
+                <a href="<%= current_user.twitter_link %>" class="tabs-col-usr personal_link__url" target="_blank"><%= current_user.twitter_link %></a>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+        
+      <div class="user-wrap-para">
+        <p class='user-wrap-para__bio'><%= current_user.bio %></p>
+      </div>
+
+      <div class="user-profile-item">
+        <h2 class="animatable fadeInLeft">Edit Profile Detail</h2>
+
+        <%= form_tag(user_path, method: :put, multipart: true, remote: true) do %>
+          <div class="user-sign-up">
+            <div class="user-signup-item">
+
+              <div class="upload-container">
+                <div class="user-input user-name animatable fadeInUp">
+                  <%= text_field_tag 'user[name]', current_user.name, class: 'sign__input card-effect', placeholder: t('users.form.name'), required: true %>
+                </div>
+
+                <div class="user-input user-twitter animatable fadeInUp">
+                  <%= text_field_tag 'user[twitter_link]', current_user.twitter_link, class: 'sign__input card-effect', id: "twitter-username", placeholder: t('users.form.twitter_url')%>
+                </div>
+
+                <div class="user-input user-personal animatable fadeInUp">
+                  <%= text_field_tag 'user[personal_url]', current_user.personal_url, class: 'sign__input card-effect', id: "personal-site-or-portfolio", placeholder: t('users.form.personal_url') %>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="user-signup-item">
+
+              <div class="upload-container card-effect animatable fadeInRight">
+
+                <div class="user-upload-img user-avatar-img">
+                  <div class="avatar-upload border-right-lite">
+                    <div class="avatar-preview" id='profile'>
+                      <% if current_user.attachment.present? %>
+                        <div id="imagePreview" style="background-image: url(<%= rails_storage_redirect_path(current_user.attachment) %>);"></div>
+                      <% else %>
+                        <div id="imagePreview" style="background-image: image-url('<%= User.default_image %>');"></div>
+                      <% end %>
+                    </div>
+
+                    <div class="avatar-edit">
+                      <%= file_field_tag 'user[attachment]', class: 'form-control-file', id: "imageUpload" %>
+                      <label for="imageUpload"><%= t('users.edit.upload_profile') %></label>
+                      <!--  <p><%= t('users.edit.recommended_image_size', size: '400x400') %><br><%= t('users.edit.gif_compatible') %></p> Recommended size for image -->
+                    </div>
+                  </div>
+                </div>
+
+                <div class="user-upload-img user-cover-img">
+
+                  <div class="avatar-upload border-right-lite">
+                    <div class="avatar-preview" id='banner'>
+                      <% if current_user.banner.present? %>
+                        <div id="bannerPreview" style="background-image: url(<%= rails_storage_redirect_path(current_user.banner) %>);"></div>
+                      <% else %>
+                        <div class="default-background" id="bannerPreview"></div>
+                      <% end %>
+                    </div>
+
+                    <div class="avatar-edit">
+                      <%= file_field_tag 'user[banner]', class: 'form-control-file', id: "bannerUpload" %>
+                      <label for="bannerUpload"><%= t('users.edit.upload_cover') %></label>
+                      <!-- <p><%= t('users.edit.recommended_image_size', size: '840x400') %><br><%= t('users.edit.gif_compatible') %></p>   Recommended size for image -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="user-signup-item">
+              <div class="user-bio animatable fadeInUp">
+                <%= text_area_tag 'user[bio]', current_user.bio, class: 'card-effect', placeholder: t('users.form.bio'), rows: 4, required: true %>
+              </div>
+
+              <button type="submit" type="button" class="sign__btn edit-form-btn btn-effect animatable fadeInUp"><%= t('users.form.update') %></button>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>

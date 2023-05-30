@@ -1,0 +1,140 @@
+<% if activity.event == 'create' || (activity.event == 'update' && Collection.is_valid_activity(activity) && (!activity.changeset["state"].present? || (activity.changeset["state"].present? && activity.changeset["state"] != ["pending", "approved"]))) %>
+  <div class="activity-item animatable fadeInLeft">
+    <div href="" class="card-effect activity-main-content">
+        <% cover_image = activity.item.cover.present? ? activity.item.cover : activity.item.attachment %>
+        <% if activity.event == "create" %>
+          <p><%= time_ago_in_words(activity.created_at) %></p>
+          <div class="activity-content">
+
+            <div class="act-item act-img">
+              <%= link_to collection_path(activity.item.address) do %>
+                  <%= image_tag url_for(cover_image) %>
+              <% end %>
+            </div>
+
+            <div class="act-item">
+              <%= link_to collection_path(activity.item.address) do %>
+                  <%= activity.item.title %>
+              <% end %>
+
+              <p>Minted by
+                <%= link_to user_path(activity.item.creator.address) do %>
+                    @<%= activity.item.creator.full_name %>
+                <% end %>
+                for <%= activity.item.instant_sale_price %> <%= activity.item.erc20_token.symbol %>
+              </p>
+            </div>
+          </div>
+
+        <% else %>
+          <% if activity.event == "update" %>
+            <% if activity.changeset.keys.include?("owner_id") || activity.changeset.keys.include?("owned_tokens") %>
+              <% activity_dup = activity.dup %>
+
+              <p><%= time_ago_in_words(activity_dup.created_at.nil? ? activity_dup.changeset["updated_at"].last : activity_dup.created_at) rescue "" %></p>
+              <div class="activity-content">
+
+                <div class="act-item act-img">
+                  <%= link_to collection_path(activity.item.address) do %>
+                    <%= image_tag url_for(cover_image) %>
+                  <% end %>
+                </div>
+
+                <div class="act-item">
+                  <%= link_to collection_path(activity.item.address) do %>
+                      <%= activity.item.title %>
+                  <% end %>
+                  <% if activity.changeset.keys.include?("owned_tokens") %>
+                    <p><% qty = (activity.changeset["owned_tokens"][0] - activity.changeset["owned_tokens"][1]) < 0 ? (activity.changeset["owned_tokens"][0] - activity.changeset["owned_tokens"][1]) * -1 : (activity.changeset["owned_tokens"][0] - activity.changeset["owned_tokens"][1]) %>
+                    <%= link_to user_path(activity_dup.item.owner.address) do%>
+                      @<%= activity.reify.owner.full_name %>
+                    <% end %>
+                     transferred <%= qty %> <%= qty.to_i > 1 ? 'copies' : 'copy' %></p>
+                  <% else %>
+                  <p>Transferred from
+                  <%= link_to user_path(activity.reify.owner.address) do %>
+                    @<%= activity.reify.owner.full_name %>
+                  <% end %>
+                  to @<%= link_to activity_dup.item.owner.full_name, user_path(activity_dup.item.owner.address)%> for <%= activity.reify.executed_price %> <%= activity.reify.erc20_token.symbol %></p>
+                  <% end %>
+                </div>
+              </div>
+
+            <% elsif activity.changeset.keys.include?("put_on_sale") %>
+
+              <p><%= time_ago_in_words(activity.created_at) %></p>
+              <div class="activity-content">
+
+                <div class="act-item act-img">
+                  <%= link_to collection_path(activity.item.address) do %>
+                      <%= image_tag url_for(cover_image) %>
+                  <% end %>
+                </div>
+
+                <div class="act-item">
+                  <%= link_to collection_path(activity.item.address) do %>
+                      <%= activity.item.title %>
+                  <% end %>
+
+                  <p><%= activity.changeset["put_on_sale"].last ? 'Put on sale' : 'Removed from sale' %> by
+                  <%= link_to user_path(activity.item.owner.address) do %>
+                      @<%= activity.item.owner.full_name %>
+                  <% end %> </p>
+                </div>
+              </div>
+
+            <% elsif activity.changeset.keys.include?("instant_sale_price") %>
+
+              <p><%= time_ago_in_words(activity.created_at) %></p>
+              <div class="activity-content">
+
+                <div class="act-item act-img">
+                  <%= link_to collection_path(activity.item.address) do %>
+                      <%= image_tag url_for(cover_image) %>
+                  <% end %>
+                </div>
+
+                <div class="act-item">
+                  <%= link_to collection_path(activity.item.address) do %>
+                      <%= activity.item.title %>
+                  <% end %>
+
+                  <p>Price updated by
+                  <%= link_to user_path(activity.item.owner.address) do %>
+                      @<%= activity.item.owner.full_name %>
+                  <% end %>
+                  for <%=activity.changeset["instant_sale_price"].last%> WETH</p>
+                </div>
+              </div>
+
+            <% elsif activity.changeset["state"].present? && activity.changeset["state"] == ["approved", "burned"] %>
+              
+
+              <p><%= time_ago_in_words(activity.created_at) %></p>
+              <div class="activity-content">
+
+                <div class="act-item act-img">
+                  <%= link_to collection_path(activity.item.address) do %>
+                      <%= image_tag url_for(cover_image) %>
+                  <% end %>
+                </div>
+
+                <div class="act-item">
+                  <%= link_to collection_path(activity.item.address) do %>
+                      <%= activity.item.title %>
+                  <% end %>
+
+                  <p>Burned on updated by
+                  <%= link_to user_path(activity.item.owner.address) do %>
+                      @<%= activity.item.owner.full_name %>
+                  <% end %></p>
+                </div>
+              </div>
+
+            <% end %>
+          <% end %>
+        <% end %>
+
+    </div>
+  </div>
+<% end %>

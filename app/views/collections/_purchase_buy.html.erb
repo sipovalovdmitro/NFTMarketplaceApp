@@ -1,0 +1,23 @@
+<div class="follow-step-block">
+  <div class="follow-step-icon">
+    <i class="allStart purchaseStart fa fa-check-circle grey"></i>
+    <i class="allProgress purchaseProgress fa fa-spinner fa-pulse hide"></i>
+    <i class="allDone purchaseDone fa fa-check-circle hide"></i>
+    <i class="allRetry purchaseRetry fa fa-check-circle hide grey"></i>
+  </div>
+  <div class="follow-step-content">
+    <% if @collection.is_lazy_minted? %>
+      <h4><%= t('shared.mint_and_purchase')%></h4>
+      <p class="para-color"><%= t('shared.transaction_with_wallet')%></p>
+    <% else %>
+      <h4><%= t('shared.purchase')%></h4>
+      <p class="para-color"><%= t('shared.transaction_with_wallet')%></p>
+    <%end%>
+  </div>
+  <div class="follow-step-button">
+    <a href="javascript:void(0)" class="allStart purchaseStart disabledLink grey btn-effect"><%= t('shared.start')%></a>
+    <a href="javascript:void(0)" class="allProgress purchaseProgress disabledLink hide btn-effect"><%= t('shared.in_progress')%></a>
+    <a href="javascript:void(0)" class="allDone purchaseDone disabledLink hide btn-effect"><%= t('shared.done')%></a>
+    <a href="javascript:void(0)" class="allRetry purchaseRetry hide btn-effect"><%= t('shared.try_again')%></a>
+  </div>
+</div>

@@ -1,0 +1,38 @@
+
+<div class="activity-container fadeInUp animated">
+  <% follows.each do |follow| %>
+    <div class="activity-item fadeInLeft animated">
+
+        <div href="" class="card-effect activity-main-content">
+          <%# <p>2hours ago</p> %>
+          <div class="activity-content">
+
+            <div class="act-item act-img">
+              <%# <a href=""><img src="/assets/avatar-img.png" alt=""></a> %>
+              <%= link_to user_path(id: follow.address)  do %>
+                <%= image_tag url_for(follow.profile_image) %>
+              <% end %>
+            </div>
+
+            <div class="act-item">
+              <p><%= follow.followers.count %> followers</p>
+            </div>
+
+          </div>
+        </div>
+
+      <% if id != "following" && !followees.pluck(:id).include?(follow.id) %>
+        <div class="follow-details-button">
+          <a href="<%= follow_users_path(id: follow.address) %>" class="connect-wallet">
+            <i class="fa fa-user-plus color-white"></i> <span class="color-white">Follow</span>
+          </a>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+
+
+
+

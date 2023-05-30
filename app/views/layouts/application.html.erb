@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LZ9VRVFF77"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-LZ9VRVFF77');
+  </script>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%# <link rel="shortcut icon" href="/assets/favicon.ico" type="image/x-icon"> %>
+    <%= favicon_link_tag 'favicon.ico' %>
+    <%= Gon::Base.render_data %>
+
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag 'application', media: 'all' %>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://kit.fontawesome.com/c36fe64df0.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
+    <script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <%# <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script> %>
+
+    <%= javascript_pack_tag 'application' %>
+    <%= javascript_pack_tag params[:controller] if (Rails.application.assets || Sprockets::Environment.new).find_asset("#{params[:controller]}.js") %>
+    <title><%= open_graph[:title] %></title>
+    <meta name="description" content="<%= open_graph[:description] %>">
+    <meta name="keywords" content="NFT marketplace,Music NFT marketplace,nft collectibles,music collectibles">
+    <meta name="author" content="soku.io">
+    <link rel="canonical" href="<%= current_url %>"/>
+    <%= yield :meta_og %>
+  </head>
+
+ <body class='body'>
+  <div class='page-container'>
+   <%#= render "common/header_top" %>
+    <% if current_user %>
+      <%= render "common/my_header" %>
+    <% else %>
+      <%= render "common/header" %>
+    <% end %>
+    <!-- home -->
+    <!-- end home -->
+  <%= yield%>
+
+    <%#= yield %>
+    <%= render "common/footer" %>
+    <%= render 'common/loader' %>
+    <%= render 'common/wrong_network' %>
+    <%= toastr_flash %>
+
+
+    <script type="text/javascript">
+      $(document).ready(function() {
+        // Hero Carousel
+        $('#hero-carousel').owlCarousel({
+          loop: true,
+          margin: 0,
+          dots: true,
+          nav: false,
+          autoplay:false,
+          autoplayTimeout:3000,
+          animateOut: 'fadeOut',
+          animateIn: 'fadeIn',
+          autoplayHoverPause:true,
+          responsive: {
+            0: {
+              items: 1
+            },
+            600: {
+              items: 1
+            },
+            1000: {
+              items: 1
+            }
+          }
+        });
+
+        // Tabs
+
+        
+        $('.sko-hero-tab li').on('click', function(event) {
+          event.preventDefault();
+
+          $(this).addClass('active');
+          $(this).siblings().removeClass('active');
+  
+          var $tc = $(this).attr('data-tc');
+          
+          if ( $tc == 'all' ) {
+            $( '.tabs-content .auction-col' ).removeClass( 'is-hidden' );    
+          } else {
+            $( '.tabs-content .auction-col' ).addClass( 'is-hidden' );
+            $( '.tabs-content .auction-col[data-tc=' + $tc + ']' ).removeClass( 'is-hidden' );
+
+            $( '.profile-tabs-det' ).addClass( 'is-hidden' );
+            $( '.profile-tabs-det[data-tc=' + $tc + ']' ).removeClass( 'is-hidden' );
+          }
+          
+        });
+
+
+        // Activity Tabs
+
+        $('.activity-head-item ul li').on('click', function(event) {
+          event.preventDefault();
+
+          $(this).addClass('active');
+          $(this).siblings().removeClass('active');
+  
+          var $data_activity = $(this).attr('data-activity');
+          
+          if ( $data_activity == 'reset' ) {
+            $( '.activity-item' ).removeClass( 'is-hidden' );    
+          } else {
+            $( '.activity-item' ).addClass( 'is-hidden' );
+            $( '.activity-item[data-activity=' + $data_activity + ']' ).removeClass( 'is-hidden' );
+          }
+          
+        });
+
+        $('.days-tabs li').on('click', function(event) {
+          event.preventDefault();
+
+          $(this).addClass('active');
+          $(this).siblings().removeClass('active');
+  
+          var $tc = $(this).attr('data-day');
+          
+          if ( $tc == 'all' ) {
+            $( '.tabs-content .auction-col' ).removeClass( 'is-hidden' );    
+          } else {
+            $( '.tabs-content .auction-col' ).addClass( 'is-hidden' );
+            $( '.tabs-content .auction-col[data-day=' + $tc + ']' ).removeClass( 'is-hidden' );
+
+            $( '.profile-tabs-det' ).addClass( 'is-hidden' );
+            $( '.profile-tabs-det[data-day=' + $tc + ']' ).removeClass( 'is-hidden' );
+          }
+          
+        });
+
+
+        // Explore Tabs
+        $('.skop-explore li').on('click', function(event) {
+          event.preventDefault();
+
+          $(this).addClass('active');
+          $(this).siblings().removeClass('active');
+  
+          var $explore = $(this).attr('data-explore');
+          
+          if ( $explore == 'reset' ) {
+            $( '.explore-col' ).removeClass( 'is-hidden' );    
+          } else {
+            $( '.explore-col' ).addClass( 'is-hidden' );
+            $( '.explore-col[data-explore=' + $explore + ']' ).removeClass( 'is-hidden' );
+          }
+          
+        });
+
+
+        $('.user-profile-tab .skop-explore li').on('click', function(event) {
+          event.preventDefault();
+
+          $(this).addClass('active');
+          $(this).siblings().removeClass('active');
+  
+          var $data_user_profile = $(this).attr('data-user-profile');
+          
+          if ( $data_user_profile == 'my-collections' ) {
+            $( '.user-profile' ).removeClass( 'is-hidden' );    
+          } else {
+            $( '.user-profile' ).addClass( 'is-hidden' );
+            $( '.user-profile[data-user-profile=' + $data_user_profile + ']' ).removeClass( 'is-hidden' );
+          }
+          
+        });
+
+        // Explore profile tabs
+        $('.user-tabs ul li').on('click', function(event) {
+          event.preventDefault();
+
+          $(this).addClass('active');
+          $(this).siblings().removeClass('active');
+  
+          var $explore = $(this).attr('data-tb');
+          
+          if ( $explore == 'all' ) {
+            $( '.explore-profile' ).removeClass( 'is-hidden' );    
+          } else {
+            $( '.explore-profile' ).addClass( 'is-hidden' );
+            $( '.explore-profile[data-tb=' + $explore + ']' ).removeClass( 'is-hidden' );
+          }
+          
+        });
+
+        $('.profile-det-tabs ul li a').on('click', function(event) {
+          event.preventDefault();
+
+          $(this).addClass('active');
+          $(this).siblings().removeClass('active');
+  
+          var $explore_pd = $(this).attr('data-pd');
+          
+          if ( $explore_pd == 'all' ) {
+            $( '.profile-tabs-det' ).removeClass( 'is-hidden' );    
+          } else {
+            $( '.profile-tabs-det' ).addClass( 'is-hidden' );
+            $( '.profile-tabs-det[data-pd=' + $explore_pd + ']' ).removeClass( 'is-hidden' );
+          }
+          
+        });
+
+
+        $('.cat-sec-item ul li').on('click', function(event) {
+          event.preventDefault();
+
+          $(this).addClass('active');
+          $(this).siblings().removeClass('active');
+  
+          var $data_explore_profile = $(this).attr('data-explore-profile');
+          
+          if ( $data_explore_profile == 'all' ) {
+            $( '.explore-profile' ).removeClass( 'is-hidden' );    
+          } else {
+            $( '.explore-profile' ).addClass( 'is-hidden' );
+            $( '.explore-profile[data-explore-profile=' + $data_explore_profile + ']' ).removeClass( 'is-hidden' );
+          }
+          
+        });
+
+        // Swiper
+        var swiper = new Swiper(".sko-swiper", {
+          slidesPerView: 4,
+          spaceBetween: 20,
+          loop: true,
+          autoplay: {
+            delay: 5000,
+          },
+          speed: 2000,
+          autoplayHoverPause: true,
+          navigation: {
+            nextEl: ".swiper-btn-rights",
+            prevEl: ".swiper-btn-left",
+          },
+          breakpoints: {
+            320: {
+              slidesPerView: 1,
+              spaceBetween: 20,
+            },
+            480: {
+              slidesPerView: 2,
+              spaceBetween: 20,
+            },
+            640: {
+              slidesPerView: 3,
+              spaceBetween: 20,
+            },
+            768: {
+              slidesPerView: 2,
+              spaceBetween: 20,
+            },
+            1024: {
+              slidesPerView: 4,
+              spaceBetween: 20,
+            },
+            
+          },
+        });
+
+        $(".sko-top-item h2 span.sko-day").on("click", function() {
+          console.log("click");
+          // $(this).toggleClass("fas fa-heart far fa-heart");
+        });
+
+        $('.related-col ul li img').click(function(event){
+          event.preventDefault();
+          $('.sko-tooltip').removeClass('is_visible');
+          $(this).prev('.sko-tooltip').toggleClass('is_visible');
+        });
+
+        // Modal
+        $('.onsale-btn').click(function(event){
+          event.preventDefault();
+          $('.modal-step').toggleClass('is-visible');
+          $('body').addClass('f-hidden');
+        });
+
+        $('.modal-close').click(function(event){
+          event.preventDefault();
+          $('.modal-step').removeClass('is-visible');
+          $('body').removeClass('f-hidden');
+
+        });
+
+        // Modal Confirmation 
+        $('.title-item span').click(function(event){
+          event.preventDefault();
+          console.log('click');
+          $('.modal-confirm').toggleClass('is-visible');
+          $('body').addClass('f-hidden');
+        });
+
+        $('.modal-close').click(function(event){
+          event.preventDefault();
+          $('.modal-confirm').removeClass('is-visible');
+          $('body').removeClass('f-hidden');
+        });
+
+        // $("table tbody tr td").each(function() {
+        //     let $this = $(this).find('p.hvr-truncate');
+        //     $this.click(function(event){
+        //       event.preventDefault();
+        //       $(".full-value").addClass('active');
+        //     });
+        // });
+
+        $('table tbody tr td.truncate-value p.hvr-truncate').on('click', function(event){
+          event.preventDefault();
+          $('.full-value').removeClass('active');
+          $(this).prev('.full-value').toggleClass('active');
+        });
+
+
+        $("table tbody tr td").each(function() {
+            let $this = $(this).find('span.social-btn');
+            let $thisModal = $(this).find('.modal-confirm');
+            $this.on('click', function(event){
+              event.preventDefault();
+              $thisModal.toggleClass('is-visible');
+              // $('body').addClass('f-hidden');  
+              $(".top-collection-tbl table tbody tr").removeClass('hvr-float');
+              $(".explore-load-more").removeClass('fadeInUp animated');
+              $(".explore-load-more a").removeClass('hvr-float');
+            });
+
+            $('.modal-close').click(function(event){
+              event.preventDefault();
+              $('.modal-confirm').removeClass('is-visible');
+              $('body').removeClass('f-hidden');
+            });
+        });
+
+        $('.sko-explore-cross').hide();
+        $('.sko-global-cross').hide();
+
+         $('.main__filter-search input').on('keyup', function(event) {
+          event.preventDefault();
+          $('.sko-explore-cross').show();
+        });
+
+        $('.header__search input').on('keyup', function(event) {
+          event.preventDefault();
+          // $('.sko-global-cross').show();
+          $(this).val().length > 0 ? $('.sko-global-cross').show() : $('.sko-global-cross').hide();
+        });
+
+        $('.sko-explore-cross').on('click', function(event) {
+          event.preventDefault();
+          $('.main__filter-search input').val('');
+          $(this).hide();
+        });
+
+        $('.sko-global-cross').on('click', function(event) {
+          event.preventDefault();
+          $('.header__search input').val('');
+          $(this).hide();
+        });
+
+
+        $('.main__explore .dropdown-menu li a').on('click', function(event) {
+          event.preventDefault();
+          $('.main__explore .dropdown-menu').removeClass('show');
+        });
+
+        // Animate on scroll in view
+
+        var $animationElements = $('.animatable');
+        var $window = $(window);
+
+        var doAnimations = function() {
+    
+          // Calc current offset and get all animatables
+          var offset = $(window).scrollTop() + $(window).height(), $animatables = $('.animatable');
+          
+          // Unbind scroll handler if we have no animatables
+          if ($animatables.length == 0) {
+            $(window).off('scroll', doAnimations);
+          }
+          
+          // Check all animatables and animate them if necessary
+          $animatables.each(function(i) {
+            var $animatable = $(this);
+            if (($animatable.offset().top + $animatable.height() - 20)) {
+              $animatable.removeClass('animatable').addClass('animated');
+            }
+          });
+
+        };
+        
+        $(window).on('scroll', doAnimations);
+        $(window).trigger('scroll');
+
+        var swiper = new Swiper(".topSwiper", {
+          slidesPerView: 4,
+          spaceBetween: 0,
+          navigation: {
+            nextEl: ".swiper-btn-left",
+            prevEl: ".swiper-btn-rights",
+          },
+          breakpoints: {
+            320: {
+              slidesPerView: 1,
+              spaceBetween: 20,
+            },
+            480: {
+              slidesPerView: 2,
+              spaceBetween: 20,
+            },
+            640: {
+              slidesPerView: 3,
+              spaceBetween: 20,
+            },
+            768: {
+              slidesPerView: 2,
+              spaceBetween: 20,
+            },
+            1024: {
+              slidesPerView: 4,
+              spaceBetween: 20,
+            },
+            
+          },
+        });
+
+        var swiper = new Swiper(".HeroSwiper", {
+          spaceBetween: 10,
+          slidesPerView: 5,
+          speed: 2000,
+          watchSlidesProgress: true,
+          updateOnWindowResize: true,
+          grabCursor: true,
+          centeredSlides: true,
+          centeredSlidesBounds: true,
+          initialSlide: 0,
+          on: {
+            click(event) {
+              console.log('event.target',this.clickedIndex);
+              swiper.slideTo(this.clickedIndex);	
+            },
+          },
+        });
+        var swiper2 = new Swiper(".HeroSwiper2", {
+          spaceBetween: 10,
+          slidesPerView: 1,
+          speed: 2000,
+          navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+          },
+          thumbs: {
+            swiper: swiper,
+          },
+        });
+
+        var swiper3 = new Swiper(".showSwiper", {
+          slidesPerView: 4,
+          // spaceBetween: 0,
+          navigation: {
+            nextEl: ".show-btn-rights",
+            prevEl: ".show-btn-left",
+          },
+          breakpoints: {
+            320: {
+              slidesPerView: 1,
+            },
+            480: {
+              slidesPerView: 1,
+            },
+            640: {
+              slidesPerView: 1,
+            },
+            768: {
+              slidesPerView: 2,
+            },
+            1024: {
+              slidesPerView: 4,
+            },
+            
+          },
+        });
+
+        $('#collection_instant_sale_price').keyup(function(){
+          var price = $(this).val();
+          $('.auction-price-item h4').html(price);
+        });
+
+        $('.select_dev .select-styled').change( function() {
+          var value = $(this).val();
+          $('.auction-price-item h4 span').html(value);
+        });
+        
+
+      });
+
+      var swiper = new Swiper(".showSwiper", {
+          slidesPerView: 4,
+          // spaceBetween: 0,
+          navigation: {
+            nextEl: ".show-btn-rights",
+            prevEl: ".show-btn-left",
+          },
+          breakpoints: {
+            320: {
+              slidesPerView: 1,
+              <%# spaceBetween: 10, %>
+            },
+            480: {
+              slidesPerView: 1,
+              <%# spaceBetween: 10, %>
+            },
+            640: {
+              slidesPerView: 1,
+              <%# spaceBetween: 10, %>
+            },
+            768: {
+              slidesPerView: 2,
+              <%# spaceBetween: 10, %>
+            },
+            1024: {
+              slidesPerView: 4,
+              <%# spaceBetween: 10, %>
+            },
+            
+          },
+        });
+
+      $('#collection_instant_sale_price').keyup(function(){
+        var price = $(this).val();
+        $('.auction-price-item h4.price').html(price);
+      });
+
+      $(".size_chart").hide();  
+      $("#1").show();
+      $('.instant-sale .sign__select').on('change', function() {
+        $('.size_chart').hide();
+        $('#'+$(this).val()).show();
+      });
+
+      var swiper = new Swiper(".swiper-variant", {
+          slidesPerView: 4,
+          spaceBetween: 20,
+          speed: 2000,
+          loop: true,
+          navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+          },
+          autoplay: {
+            delay: 2500,
+            disableOnInteraction: false,
+          },
+          breakpoints: {
+            320: {
+              slidesPerView: 1,
+              spaceBetween: 20,
+            },
+            480: {
+              slidesPerView: 1,
+              spaceBetween: 20,
+            },
+            640: {
+              slidesPerView: 1,
+              spaceBetween: 20,
+            },
+            768: {
+              slidesPerView: 2,
+              spaceBetween: 20,
+            },
+            1024: {
+              slidesPerView: 4,
+              spaceBetween: 20,
+            },
+            1440: {
+              slidesPerView: 4,
+              spaceBetween: 20,
+            },
+            2560: {
+              slidesPerView: 6,
+              spaceBetween: 20,
+            },
+            
+          },
+        });
+
+        $(".activity-filter").addClass('is-hidden')
+        $('.activity-head-item .filteration').on('click', function(event) {
+            event.preventDefault();
+           $(".activity-filter").toggleClass('is-hidden');
+        });
+
+        $('.mbl-breakpoint').addClass('floor-remove');
+        function resize() {
+          if ($(window).width() < 767) {
+            $('.mbl-breakpoint').removeClass('floor-remove');
+          }
+        }
+
+        $(window).on('resize', function() {
+          resize()
+        });
+
+        function copyToClipboard(element) {
+          var $temp = $("<input>");
+          $("body").append($temp);
+          $temp.val($(element).text()).select();
+          document.execCommand("copy");
+          $temp.remove();
+        }
+
+        $('.btn-copied span i').click(function(event){
+          $(".copy-text").addClass('active');
+          setTimeout(function () {
+            $(".copy-text").removeClass('active');
+          }, 2500);
+        });
+
+
+        $('.modal-copied span i').click(function(event){
+          $(".modal-copy-text").addClass('active');
+          setTimeout(function () {
+            $(".modal-copy-text").removeClass('active');
+          }, 2500);
+        });
+
+    </script>
+    </div>
+  </body>
+
+</html>

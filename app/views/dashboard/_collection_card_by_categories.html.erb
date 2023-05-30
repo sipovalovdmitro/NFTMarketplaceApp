@@ -1,0 +1,29 @@
+<% if @category_collections_sale.present? %>
+  <% @category_collections_sale.each do |collection| %>
+      <%= render "/common/collection_card", collection: collection %>
+  <% end %>
+<% elsif @category_collections_sort.present? %>
+  <% @category_collections_sort.each do |collection| %>
+      <%= render "/common/collection_card", collection: collection %>
+  <% end %>
+<% elsif @no_record == "clear" %>
+    <%= render partial: 'common/empty' %>
+<% else%>
+    <% if @category_collections.present? %>
+      <% category_collections.each do |collection| %>
+          <%= render "/common/collection_card", collection: collection %>
+      <% end %>
+    <% else %>
+      <%= render partial: 'common/empty' %>
+    <% end %>
+<% end %>
+
+<%if @category_collections_sort.nil? && @category_collections_sale.nil? &&  @no_record == "clear" %>
+  <% if @category_collections.present? %>
+    <% category_collections.each do |collection| %>
+        <%= render "/common/collection_card", collection: collection %>
+    <% end %>
+  <% else %>
+    <%= render partial: 'common/empty' %>
+  <% end %>
+<% end %>

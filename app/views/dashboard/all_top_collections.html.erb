@@ -1,0 +1,63 @@
+<main class="main">
+  <div class="user-wrapper">
+      <div class="user-container">
+
+        <div class="collection-head">
+          <h1> Top Collections </h1>
+        </div>
+
+
+
+        <div class="main__filter">
+
+          <div class="main__filter-wrap explore-filters">
+
+              <div class="header__action header__action--profile">
+                <a class="explore-tabs hvr-bounce-in" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <%= params[:days].present? ? 'Top Collections in ' + params[:days] + ' days' : 'Filter' %>
+                  <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                </a>
+
+                <ul class="dropdown-menu card-effect header__profile-menu" aria-labelledby="dropdownMenuProfile">
+                  <li>
+                    <%= link_to 'Past Day', rankings_path(days: '1'), class: 'all-top-collections-filter' %>
+                  </li>
+                  <li>
+                    <%= link_to "Past 7 Days", rankings_path(days: '7'), class: 'all-top-collections-filter' %>
+                  </li>
+                  <li>
+                    <%= link_to "Past 30 Days", rankings_path(days: '30'), class: 'all-top-collections-filter' %>
+                  </li>
+                  <li>
+                    <%= link_to "Reset", rankings_path %>
+                  </li>
+                </ul>
+              </div>
+
+          </div>
+        </div>
+
+        <div class="collection-container main-new-coll">
+          <%if @top_collections.present? %>
+              <div id="topCollections" class="top-collections">
+                <%= render 'dashboard/top_collections', collections: @top_collections %>
+              </div>
+          <%else%>
+              <%= render partial: 'common/empty' %>
+          <%end%>
+
+
+          <!-- paginator -->
+            <div class="row">
+              <div class="col-12">
+                <div class="flickr_pagination sko-pagination sko-pagination">
+                </div>
+              </div>
+            </div>
+          <!-- end paginator -->
+
+        </div>
+
+      </div>
+  </div>
+</main>

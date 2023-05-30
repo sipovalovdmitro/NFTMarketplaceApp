@@ -1,0 +1,23 @@
+<div class="collection-item hvr-float">
+  <a href="<%= nft_contract_path(contract.address)%>">
+    <div class="card-effect animatable fadeInRight">
+
+      <div class="sko-hot-img">
+        <%= image_tag(contract.cover)  if contract.cover.present? %>
+      </div>
+      <div class="skohot-content">
+        <div class="sko-coll-img">
+            <%= image_tag(contract.attachment, class: 'sko-coll-avatar') if contract.attachment.present? %>
+        </div>
+
+        <div class="sko-hot-title">
+          <a href="<%= nft_contract_path(contract.address)%>">
+            <h2 class="auc-title-item"><%= contract.name %></h2>
+          </a>
+          <p>Volume: <%= number_with_precision(usd_to_eth(contract.calculate_volume(contract.address)), percision: 3) %> ETH</p>
+        </div>
+
+      </div>
+    </div>
+  </a>
+</div>

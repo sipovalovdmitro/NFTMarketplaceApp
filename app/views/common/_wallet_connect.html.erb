@@ -1,0 +1,32 @@
+<div id="connect_to_wallet" class="zoom-anim-dialog mfp-hide modal sm_modal">
+  <button class="modal__close md_cls" type="button"><i class="fas fa-times"></i></button>
+  <h4><%= t('header.connect_wallet') %></h4>
+  <p><%= t('header.wallet_help') %> <a href="#what-wallet" class="open-modal"><%= t('header.wallet_info') %></a></p>
+
+  <div class="w_btn">
+    <a href="javascript:void(0);" onclick="window.connect()">
+      <span class="w_btn_icon"> <%= image_tag 'metamask.png' %> </span>
+      <%= t('header.metamask_wallet') %>
+    </a>
+  </div>
+  <!-- <p class="mt-20"><%= t('header.wallet_confi') %></p> -->
+</div>
+
+
+<div id="what-wallet" class="zoom-anim-dialog mfp-hide modal sm_modal">
+  <!-- <button class="modal__close md_cls" type="button"><i class="fas fa-times"></i></button> -->
+  <a class="open-modal default-modal-element" href="#connect_to_wallet">
+    <i class="fas fa-times"></i>
+  </a>
+  <h4 class="modal-title">What is a wallet?</h4>
+  <p>Wallets are used to send,receive,and store digital assets like NFTs and Crypto.
+  A wallet is a necessity when dealing with NFTs and DeFi. If you don’t already have a wallet, make sure setup your MetaMask wallet before proceeding.</p>
+</div>
+
+
+<script type="text/javascript">
+  $('#text-what-is-wallet').click(function(){
+    $("#connect_to_wallet .modal__close").click();
+  });
+  var address;
+</script>

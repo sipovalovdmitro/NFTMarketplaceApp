@@ -1,0 +1,13 @@
+<% content_for :meta_og do %>
+  <meta property="og:title" content="<%= title&.squish %>" />
+  <meta property="og:description" content="<%= description&.squish %>" />
+  <meta property="og:image" content="<%= image %>" />
+  <meta property="og:url" content="<%= current_url %>" />
+  <meta property="og:type" content="website">
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta property="twitter:domain" content="<%= get_host_without_www(current_url) %>">
+  <meta name="twitter:title" content="<%= title&.squish %>"/>
+  <meta name="twitter:description" content="<%= description&.squish %>"/>
+  <meta name="twitter:image" content="<%= image %>"/>
+<% end %>

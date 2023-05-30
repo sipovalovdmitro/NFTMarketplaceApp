@@ -1,0 +1,10 @@
+$("#topCollections").html("<%= j render partial: 'dashboard/top_collections', locals: { collections: @top_collections } %>");
+
+$('.loading-gif').hide();
+
+$('.all-top-collections-filter').each(function() {
+  var link = $(this);
+  var href = link.attr('href');
+  var newHref = href + '&sort_by=' + $("#topCollectionsSortBy").val() + '&sort_to=' + $("#topCollectionsSortTo").val();
+  link.attr('href', newHref);
+});

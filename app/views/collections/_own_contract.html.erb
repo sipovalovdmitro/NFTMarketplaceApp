@@ -1,0 +1,31 @@
+<%unless blank==true%>
+    <label class="radio-img radio_c_collection">
+        <%= radio_button_tag 'chooseOwnCollection', contract.address, nil, class: "chooseCollectionErc" %>
+        <div class="image">
+            <div class="icon-style-choose-collection">
+            <span class="color-break"><%=image_tag contract.attachment_url, class: "img-responsive"%></span>
+            </div>
+            <div class="label-style-choose-collection">
+            <label><%=contract.symbol%></label>
+            </div>
+            <div class="para-style-choose-collection">
+            <p class="para-color"><%=contract.name%></p>
+            </div>
+        </div>
+    </label>
+<%else%>
+    <label class="radio-img radio_c_collection">
+        <%= radio_button_tag 'chooseOwnCollection', 'new', true, class: "chooseCollectionErc" %>
+        <div class="image">
+            <div class="icon-style-choose-collection">
+            <span>+</span>
+            </div>
+            <div class="label-style-choose-collection">
+            <label>New</label>
+            </div>
+            <div class="para-style-choose-collection">
+            <p class="para-color">Collection</p>
+            </div>
+        </div>
+    </label>
+<%end%>

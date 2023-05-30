@@ -1,0 +1,56 @@
+<main class="main">
+  <div class="user-wrapper">
+    <div class="user-container">
+
+      <div class="collection-head">
+        <h1> Referrals </h1>
+      </div>
+
+      <!-- <div class="main__filter">
+        <div class="main__filter-wrap explore-filters">
+          <div class="header__action header__action--profile">
+           <button disabled>
+            <a class="explore-tabs hvr-bounce-in" role="button" data-toggle="dropdown" style="color: rgba(5, 30, 91, 0.4)" aria-haspopup="true" aria-expanded="false">
+              <%= params[:days].present? ? 'Top NFTs in ' + params[:days] + ' days' : 'Filter' %>
+              <i class="fas fa-chevron-down" aria-hidden="true"></i>
+            </a>
+          </button>
+            <ul class="dropdown-menu card-effect header__profile-menu" aria-labelledby="dropdownMenuProfile">
+              <li>
+                <%= link_to 'Past Day', referrals_path(days: '1') %>
+              </li>
+              <li>
+                <%= link_to "Past 7 Days", referrals_path(days: '7') %>
+              </li>
+              <li>
+                <%= link_to "Past 30 Days", referrals_path(days: '30') %>
+              </li>
+              <li>
+                <%= link_to "Reset", referrals_path %>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </div> -->
+
+      <div class="collection-container">
+        <%if @referrals.present? %>
+          <%= render 'dashboard/referrals', referrals: @referrals, page: @page, current_user: current_user %>
+        <%else%>
+          <%= render partial: 'common/empty' %>
+        <%end%>
+
+        <!-- paginator -->
+        <div class="row">
+          <div class="col-12">
+            <div class="flickr_pagination sko-pagination sko-pagination">
+              <%= will_paginate @referrals %>
+            </div>
+          </div>
+        </div>
+        <!-- end paginator -->
+      </div>
+    </div>
+  </div>
+</main>

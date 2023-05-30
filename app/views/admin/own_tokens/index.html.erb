@@ -1,0 +1,68 @@
+<div class="main-content">
+  <div class="page-content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="page-title-box d-flex align-items-center justify-content-between">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm-6">
+                  <h4 class="card-title"><%= t("admin.own_tokens.index.title") %></h4>
+                </div>
+                <div class="col-sm-2"></div>
+                <div class="col-sm-4">
+                  <%= link_to t("admin.own_tokens.index.add_new"), new_admin_own_token_path, class: "float-right" %>
+                </div>
+              </div>
+              <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                <thead>
+                  <tr>
+                    <th><%= t("admin.own_tokens.index.name") %></th>
+                    <th><%= t("admin.own_tokens.index.symbol") %></th>
+                    <th><%= t("admin.own_tokens.index.address") %></th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if @tokens.present? %>
+                    <% @tokens.each do |token| %>
+                      <tr>
+                        <td><%= token.name %></td>
+                        <td><%= token.symbol %></td>
+                        <td><%= token.address %></td>
+                        <td>
+                          <% if token.is_partner%>
+                            <%= link_to t('shared.edit'), edit_admin_own_token_path(token), class: "pr-2"%>
+                          <%end%>
+                        </td>
+                      </tr>
+                    <% end %>
+                  <% else %>
+                    <tr>
+                      <td colspan="4"><%= t(:no_records, scope: :admin) %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="flickr_pagination sko-pagination">
+            <%#= will_paginate @whitelisted_users %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,125 @@
+<% if @referrals.present? %>
+  <div class="top-collection-new">
+    <!-- <div class="new-col-item">
+      <h2>Top Referrals</h2>
+    </div> -->
+  </div>
+
+  <div class="top-collection-tbl top-referral-tbl">
+    <table class="animatable fadeInUp">
+      <thead>
+        <tr>
+          <th style="font-size: 20px" colspan="4">Top Referrals</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @referrals.each_with_index  do |contract, index| %>
+          <tr class="hvr-float" >
+            <td class="floor-not">
+              <span><%= ((page.to_i - 1) * 10) + index + 1 %></span>
+              <a href="<%= collection_path(contract.address)%>">
+                <% if contract.attachment.present? %>
+                  <%= image_tag cover_url(contract), class: 'anibouncein animation-element' %>
+                <% else %>
+                  <p>None</p>
+                <% end %>
+              </a>
+              <div class=" nft-top-new-label top-nft-ref-label">
+                <a href="<%= collection_path(contract.address)%>">
+                  <h4><%= contract.name %></h4>
+                </a>
+                <p class="floor-tbl-m-referral">Floor: <%= '%.6f' % contract.instant_sale_price %> <%= contract.erc20_token&.symbol%></p>
+                <%# <p class="sko-tbl-mobile">(0.5 ETH)</p> %>
+              </div>
+            </td>
+            <!--  <% floor_price = contract.nft_contract.calculate_floor_price %>
+            <td class='volume truncate-value'>
+              <p class="tbl-heading">Volume</p>
+              <span class="full-value"><%= '%.10f' % usd_to_eth(contract.recent_volume) %> ETH</span>
+              <p class="hvr-truncate"><%= '%.3f' % usd_to_eth(contract.recent_volume).round(3) %> ETH</p>
+            </td>
+            -->
+            <td class="floor-col floor-truncate-value truncate-value">
+              <% min_bid_token = Erc20Token.find(contract.min_bid_erc20_token_id) %>
+              <p class="tbl-heading">Price</p>
+              <% if contract.instant_sale_enabled %>
+                <span class="full-value"><%= '%.6f' % contract.instant_sale_price %> <%= contract.erc20_token&.symbol%></span>
+                <p class="hvr-truncate"><%= '%.4f' % contract.instant_sale_price %> <%= contract.erc20_token&.symbol%> </p>
+              <% elsif contract.allow_bid %>
+                <%if contract.minimum_bid.present? %>
+                  <span class="full-value"><%= '%.6f' % contract.minimum_bid %> <%= min_bid_token.symbol%></span>
+                  <p class="hvr-truncate"><%= '%.4f' % contract.minimum_bid %> <%= min_bid_token.symbol%> </p>
+                <%else%>
+                  <p>No Bids</p>
+                <%end%>
+              <% else %>
+                <p>None</p>
+              <%end%>
+            </td>
+            <td class="referral-percentage">
+              <p class="tbl-heading">Referral</p>
+              <div class="referal-p-pop">
+                <% if contract.referral_percentage.present? %>
+                  <p><%= contract.referral_percentage %>%</p>
+                <% end %>
+                <%= link_to collection_path(contract.address), class: "social-btn" do %>
+                  <i class="fas fa-external-link-alt"></i>
+                <% end %>
+              </div>
+              <%# Modal Confirmation %>
+              <% referral_link = set_referral_token(contract) %>
+              <div class="modal-place modal-confirm col-new-popup">
+                <div class="modal-overlay modal-toggle modal-close"></div>
+                <div class="modal-wrapper modal-transition card-effect">
+
+                  <div class="modal-body modal-step">
+                    <div class="item-det-con card-effect">
+                      <% if contract.attachment.present? %>
+                        <img src="<%= url_for(contract.attachment) %>" alt="">
+                      <% end %>
+                      <h3><%= contract.name %></h3>
+                    </div>
+
+                    <div class="status-tbl">
+                      <div class="status-item">
+                        <% if current_user.present? %>
+                          <% if contract.referrals.un_used.present? && is_active_user_link(contract.id , current_user.id) %>
+                            <b>
+                              Referral Fee: <%= contract&.referral_percentage %>%
+                            </b>
+                            <p>
+                              <%= referral_link %>
+                            </p>
+
+                            <div class="sko-social">
+                              <a href="https://twitter.com/share?url=<%= referral_link %>&text=Check out <%=  contract.name %> on SokuNFT!" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fab fa-twitter"></i></a>
+                              <a href="https://www.facebook.com/sharer/sharer.php?u=<%= referral_link %>&caption=Check out <%=  contract.name %> on SokuNFT!" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fab fa-facebook"></i></a>
+                              <a href="https://telegram.me/share/url?url=<%= referral_link %>&text=Check out <%=  contract.name %> on SokuNFT!" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fas fa-paper-plane"></i></a>
+                              <a href="mailto:?subject=<%=  contract.name %>&body=<%= contract.description %> Link here:<%= referral_link %>"><i class="fas fa-envelope"></i></a>
+                              <a href="mailto:?subject=<%=  contract.name %>&body=<%= contract.description %> Link here:<%= referral_link %>"><i class="fas fa-envelope"></i></a>
+                              <p class="is-hidden" id="copyUrl"><%= referral_link %></p>
+                              <div class="copy-text">
+                                <button class="btn-copied"><span class="hvr-float" onclick="copyToClipboard('#copyUrl')"><i class="fas fa-link"></i></span></button>
+                              </div>
+                            </div>
+                          </div>
+                        <% else %>
+                          <p>
+                            <a href="<%= generate_referral_for_contract_path(nft_contract_id: contract.id, root_page: "yes")  %>"> Generate referral link </a>
+                          </p>
+                        <% end %>
+                      </div>
+                    </div>
+                  <% end %>
+
+                </div>
+
+              </div>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+<% end %>
